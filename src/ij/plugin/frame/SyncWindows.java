@@ -335,40 +335,7 @@ public class SyncWindows extends PlugInFrame implements
 	// --------------------------------------------------
 	/** Propagate mouse clicked events to all synchronized windows. */
 	public void mouseClicked(MouseEvent e) {
-		if (!cCursor.getState()) return;
-		if (vwins == null) return;
-		// prevent popups popping up in all windows on right mouseclick
-		if (Toolbar.getToolId()!= Toolbar.MAGNIFIER &&
-			(e.isPopupTrigger() || (e.getModifiers() & MouseEvent.META_MASK)!=0)) return;
-		ImagePlus imp;
-		ImageWindow iw;
-		ImageCanvas ic;
-		Point p;
-		p = new Point(x,y);
-
-		// get ImageCanvas that received event
-		ImageCanvas icc = (ImageCanvas) e.getSource();
-		ImageWindow iwc = (ImageWindow) icc.getParent();
-
-		for(int n=0; n<vwins.size();++n) {
-			// to keep ImageJ from freezing when a mouse event is processed on exit
-			if (ijInstance.quitting()) {
-				return;
-			}
-			imp = getImageFromVector(n);
-			if (imp != null) {
-				iw = imp.getWindow();
-				if(iw != iwc) {
-					ic = iw.getCanvas();
-					if (cCoords.getState()) {
-						p = getMatchingCoords(ic, icc, x, y);
-					}
-					ic.mouseClicked(adaptEvent(e, ic, p));
-				}
-			}
-		}
-		// Store srcRect, Magnification and others of current ImageCanvas
-		storeCanvasState(icc);
+		this.handledMouseEvent(e, "clicked");
 	}
 
 	// --------------------------------------------------
@@ -396,7 +363,6 @@ public class SyncWindows extends PlugInFrame implements
 				iw = imp.getWindow();
 				if(iw != iwc) {
 					ic = iw.getCanvas();
-
 					if (cCoords.getState()) {
 						p = getMatchingCoords(ic, icc, x, y);
 					}
@@ -454,18 +420,19 @@ public class SyncWindows extends PlugInFrame implements
 	// --------------------------------------------------
 	/** Propagate mouse pressed events to all synchronized windows. */
 	public void mousePressed(MouseEvent e) {
+		this.handledMouseEvent(e, "pressed");
+	}
+
+	private void handledMouseEvent(MouseEvent e, String type) {
 		if (!cCursor.getState()) return;
 		if (vwins == null) return;
-		// prevent popups popping up in all windows on right mouseclick
-		if (Toolbar.getToolId()!= Toolbar.MAGNIFIER &&
-			(e.isPopupTrigger() || (e.getModifiers() & MouseEvent.META_MASK)!=0)) return;
+		if (isInvalidEvent(e)) return;
+
 		ImagePlus imp;
 		ImageWindow iw;
 		ImageCanvas ic;
-		Point p;
-		p = new Point(x,y);
+		Point p = new Point(x,y);
 
-		// Current window already received mouse event.
 		// get ImageCanvas that received event
 		ImageCanvas icc = (ImageCanvas) e.getSource();
 		ImageWindow iwc = (ImageWindow) icc.getParent();
@@ -478,20 +445,32 @@ public class SyncWindows extends PlugInFrame implements
 			imp = getImageFromVector(n);
 			if (imp != null) {
 				iw = imp.getWindow();
-				ic = iw.getCanvas();
-				// Repaint to get rid of sync indicator.
-				ic.paint(ic.getGraphics());
+				if (type == "pressed") {
+					ic = iw.getCanvas();
+					// Repaint to get rid of sync indicator.
+					ic.paint(ic.getGraphics());
+				}
 				if(iw != iwc) {
 					ic = iw.getCanvas();
 					if (cCoords.getState()) {
 						p = getMatchingCoords(ic, icc, x, y);
 					}
-					ic.mousePressed(adaptEvent(e, ic, p));
+					if (type == "pressed") {
+						ic.mousePressed(adaptEvent(e, ic, p));
+					} else {
+						ic.mouseClicked(adaptEvent(e, ic, p));
+					}
 				}
 			}
 		}
 		// Store srcRect, Magnification and others of current ImageCanvas
 		storeCanvasState(icc);
+	}
+
+	private boolean isInvalidEvent(MouseEvent e) {
+		// prevent popups popping up in all windows on right mouseclick
+		return (Toolbar.getToolId()!= Toolbar.MAGNIFIER &&
+			(e.isPopupTrigger() || (e.getModifiers() & MouseEvent.META_MASK)!=0));
 	}
 
 	// --------------------------------------------------
