@@ -4,7 +4,6 @@ import ij.process.*;
 import ij.gui.*;
 import java.awt.*;
 import java.awt.image.*;
-import java.util.*;
 import java.awt.event.*;
 import ij.measure.*;
 import ij.plugin.*;
@@ -58,10 +57,9 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 	private BandPlot splot = new BandPlot();
 	private BandPlot bplot = new BandPlot();
 	private int sliderRange = 256;
-	private Panel panel, panelt;
-	private Button  originalB, filteredB, stackB, helpB, sampleB, resetallB, newB, macroB, selectB;
+	private Panel panelt;
+	private Button  originalB, filteredB, stackB, helpB, sampleB, macroB, selectB;
 	private Checkbox bandPassH, bandPassS, bandPassB, darkBackground;
-	private CheckboxGroup colourMode;
 	private Choice colorSpaceChoice, methodChoice, modeChoice;
 	private int previousImageID = -1;
 	private int previousSlice = -1;
@@ -708,7 +706,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		byte[] hsSource,ssSource,bsSource;
 
 		int [] bin = new int[256];
-		int counter=0, pi=0, rangePassH = 0, rangeStopH = 0, rangePassL = 0, rangeStopL = 0, i, j;
+		int counter=0, rangePassH = 0, rangePassL = 0, i, j;
 		int snumPixels=0;
 
 		Roi roi = imp.getRoi();
@@ -768,7 +766,6 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		ColorProcessor cp2 = new ColorProcessor(1, snumPixels, pixs);
 
 		int iminhue=256, imaxhue=-1, iminsat=256, imaxsat=-1, iminbri=256, imaxbri=-1;
-		int iminred=256, imaxred=-1, imingre=256, imaxgre=-1, iminblu=256, imaxblu=-1;
 
 		if(colorSpace==RGB)
 			cp2.getRGB(hsSource,ssSource,bsSource);
@@ -1378,10 +1375,8 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 	static void RGBtoYUV(ImageProcessor ip) {
 		int xe = ip.getWidth();
 		int ye = ip.getHeight();
-		int c, x, y, i=0, Y, U, V, r, g, b;
+		int c, x, y, Y, U, V, r, g, b;
 		double yf;
-
-		ImagePlus imp = WindowManager.getCurrentImage();
 
 		for(y=0;y<ye;y++){
 			for (x=0;x<xe;x++){

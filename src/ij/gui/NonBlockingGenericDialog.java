@@ -2,8 +2,6 @@ package ij.gui;
 import ij.*;
 import java.awt.event.*;
 import java.awt.EventQueue;
-import java.awt.GraphicsEnvironment;
-import java.awt.Frame;
 
 /** This is an extension of GenericDialog that is non-modal.
  *	@author Johannes Schindelin
@@ -34,7 +32,6 @@ public class NonBlockingGenericDialog extends GenericDialog {
 		if (imp != null) {
 			ImageWindow win = imp.getWindow();
 			if (win != null) {      //when the associated image closes, also close the dialog
-				final NonBlockingGenericDialog gd = this;
 				windowListener = new WindowAdapter() {
 					public void windowClosed(WindowEvent e) {
 						cancelDialogAndClose();

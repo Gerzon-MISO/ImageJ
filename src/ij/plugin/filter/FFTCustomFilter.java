@@ -6,7 +6,6 @@ import ij.measure.*;
 import ij.plugin.ContrastEnhancer;
 import ij.plugin.frame.Recorder;
 import java.awt.*;
-import java.util.*;
 
 
 /** This class implements the Process/FFT/Custom Filter command. */
@@ -18,7 +17,6 @@ public class FFTCustomFilter implements  PlugInFilter, Measurements {
 	private int stackSize;	
 	private ImageProcessor filter;
 	private static boolean processStack;
-	private boolean padded;
 	private int originalWidth;
 	private int originalHeight;
 	private Rectangle rect = new Rectangle();
@@ -116,7 +114,6 @@ public class FFTCustomFilter implements  PlugInFilter, Measurements {
 	}
 		
 	void customFilter(FHT fht) {
-		int size = fht.getWidth();
 		showStatus("Filtering");
 		fht.swapQuadrants(filter);
 		float[] fhtPixels = (float[])fht.getPixels();

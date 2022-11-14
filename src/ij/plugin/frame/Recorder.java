@@ -2,16 +2,10 @@ package ij.plugin.frame;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.io.*;
 import ij.*;
 import ij.plugin.*;
-import ij.plugin.frame.*; 
-import ij.text.*;
 import ij.gui.*;
 import ij.util.*;
-import ij.io.*;
-import ij.process.*;
-import ij.measure.*;
 
 /** This is ImageJ's macro recorder. */
 public class Recorder extends PlugInFrame implements PlugIn, ActionListener, ImageListener, ItemListener {
@@ -27,7 +21,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 	private Choice mode;
 	private Button makeMacro, help;
 	private TextField fileName;
-	private String fitTypeStr = CurveFitter.fitList[0];
 	private static TextArea textArea;
 	private static Recorder instance;
 	private static String commandName;

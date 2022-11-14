@@ -15,7 +15,6 @@ import java.util.*;
 import java.io.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.*;
-import java.net.URL;
 import java.awt.datatransfer.*;
 import java.awt.geom.*;
 
@@ -1582,8 +1581,6 @@ public class Functions implements MacroConstants, Measurements {
 			return new Variable[0];
 		}
 		interp.getLeftParen();
-		int next = interp.nextToken();
-		int nextNext = interp.nextNextToken();
 		Vector vector = new Vector();
 		int size = 0;
 		do {
@@ -1639,7 +1636,6 @@ public class Functions implements MacroConstants, Measurements {
 
 	String getInfo(String key) {
 			String lowercaseKey = key.toLowerCase(Locale.US);
-			int len = lowercaseKey.length();
 			if (lowercaseKey.equals("command.name")) {
 				return ImageJ.getCommandName();
 			} else if (lowercaseKey.equals("overlay")) {
@@ -4513,7 +4509,6 @@ public class Functions implements MacroConstants, Measurements {
 		if (!file.exists())
 			interp.error("File not found");
 		try {
-			StringBuffer sb = new StringBuffer(5000);
 			int len = (int)file.length();
 			if (max>len || (path.endsWith(".txt")&&!specifiedMax))
 				max = len;
@@ -5391,7 +5386,6 @@ public class Functions implements MacroConstants, Measurements {
 	void getStackStatistics(ImagePlus imp, boolean calibrated) {
 		Variable count = getFirstVariable();
 		Variable mean=null, min=null, max=null, std=null, hist=null;
-		int params = AREA+MEAN+MIN_MAX;
 		interp.getToken();
 		int arg = 1;
 		while (interp.token==',') {
@@ -5400,7 +5394,7 @@ public class Functions implements MacroConstants, Measurements {
 				case 2: mean = getVariable(); break;
 				case 3: min = getVariable(); break;
 				case 4: max = getVariable(); break;
-				case 5: std = getVariable(); params += STD_DEV; break;
+				case 5: std = getVariable(); break;
 				case 6: hist = getArrayVariable(); break;
 				default: interp.error("')' expected");
 			}
@@ -6800,7 +6794,6 @@ public class Functions implements MacroConstants, Measurements {
 			Color color = getColor();
 			if (interp.nextToken()==',') {
 				interp.getComma();
-				Color ignore = getColor();
 				overlay.drawBackgrounds(true);
 			}
 			interp.getRightParen();

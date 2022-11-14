@@ -1,6 +1,5 @@
 package ij.plugin.filter;
 import java.awt.*;
-import java.util.Vector;
 import java.util.Properties;
 import ij.*;
 import ij.gui.*;
@@ -8,20 +7,16 @@ import ij.process.*;
 import ij.measure.*;
 import ij.text.*;
 import ij.plugin.MeasurementsWriter;
-import ij.plugin.Straightener;
 import ij.plugin.frame.RoiManager;
-import ij.util.Tools;
 import ij.macro.Interpreter;
 
 /** This plugin implements ImageJ's Analyze/Measure and Analyze/Set Measurements commands. */
 public class Analyzer implements PlugInFilter, Measurements {
 	
 	private static boolean drawLabels = true;
-	private String arg;
 	private ImagePlus imp;
 	private ResultsTable rt;
 	private int measurements;
-	private StringBuffer min,max,mean,sd;
 	private boolean disableReset;
 	private boolean resultsUpdated;
 	
@@ -32,9 +27,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 		LIMIT,LABELS,INVERT_Y,SCIENTIFIC_NOTATION,ADD_TO_OVERLAY,NaN_EMPTY_CELLS};
 
 	private static final String MEASUREMENTS = "measurements";
-	private static final String MARK_WIDTH = "mark.width";
 	private static final String PRECISION = "precision";
-	//private static int counter;
 	private static boolean unsavedMeasurements;
 	public static Color darkBlue = new Color(0,0,160);
 	private static int systemMeasurements = Prefs.getInt(MEASUREMENTS,AREA+MEAN+MIN_MAX);
@@ -84,7 +77,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 	}
 	
 	public int setup(String arg, ImagePlus imp) {
-		this.arg = arg;
 		this.imp = imp;
 		IJ.register(Analyzer.class);
 		if (arg.equals("set")) {
@@ -227,12 +219,9 @@ public class Analyzer implements PlugInFilter, Measurements {
 	
 	void setOptions(GenericDialog gd) {
 		int oldMeasurements = systemMeasurements;
-		int previous = 0;
 		boolean b = false;
 		for (int i=0; i<list.length; i++) {
-			//if (list[i]!=previous)
 			b = gd.getNextBoolean();
-			previous = list[i];
 			if (b)
 				systemMeasurements |= list[i];
 			else
@@ -467,7 +456,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 				rt.addLabel("Label", getFileName());
 			return;
 		}
-		boolean straightLine = roi.getType()==Roi.LINE;
 		int lineWidth = (int)Math.round(roi.getStrokeWidth());
 		ImageProcessor ip2 = imp2.getProcessor();
 		double minThreshold = ip2.getMinThreshold();
@@ -576,7 +564,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 				double circularity = perimeter==0.0?0.0:4.0*Math.PI*(stats.area/(perimeter*perimeter));
 				if (circularity>1.0) circularity = 1.0;
 				rt.addValue(ResultsTable.CIRCULARITY, circularity);
-				Polygon ch = null;
 				boolean isArea = roi==null || roi.isArea();
 				double convexArea = roi!=null?getArea(roi.getConvexHull()):stats.pixelCount;
 				rt.addValue(ResultsTable.ASPECT_RATIO, isArea?stats.major/stats.minor:0.0);
@@ -588,7 +575,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 					rt.setDecimalPlaces(ResultsTable.ROUNDNESS, precision);
 					rt.setDecimalPlaces(ResultsTable.SOLIDITY, precision);
 				}
-				//rt.addValue(ResultsTable.CONVEXITY, getConvexPerimeter(roi, ch)/perimeter);
 			}
 		}
 		if ((measurements&RECT)!=0) {
@@ -622,7 +608,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 			rt.addValue(ResultsTable.ANGLE,stats.angle);
 		}
 		if ((measurements&FERET)!=0) {
-			boolean extras = true;
 			double FeretDiameter=Double.NaN, feretAngle=Double.NaN, minFeret=Double.NaN,
 				feretX=Double.NaN, feretY=Double.NaN;
 			Roi roi2 = roi;
@@ -753,7 +738,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 		double x = p.xpoints[0];
 		double y = p.ypoints[0];
 		int ix=(int)x, iy=(int)y;
-		double value = ip.getPixelValue(ix,iy);
 		if (markWidth>0 && !Toolbar.getMultiPointMode()) {
 			ip.setColor(Toolbar.getForegroundColor());
 			ip.setLineWidth(markWidth);
@@ -984,7 +968,6 @@ public class Analyzer implements PlugInFilter, Measurements {
 	/** Called once when ImageJ quits. */
 	public static void savePreferences(Properties prefs) {
 		prefs.put(MEASUREMENTS, Integer.toString(systemMeasurements));
-		//prefs.put(MARK_WIDTH, Integer.toString(markWidth));
 		prefs.put(PRECISION, Integer.toString(precision));	}
 
 	/** Returns an array containing the first 20 uncalibrated means. */

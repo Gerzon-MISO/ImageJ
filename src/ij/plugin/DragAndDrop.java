@@ -21,8 +21,6 @@ import java.util.ArrayList;
      
 public class DragAndDrop implements PlugIn, DropTargetListener, Runnable {
 	private Iterator iterator;
-	private static boolean convertToRGB;
-	private static boolean virtualStack;
 	private boolean openAsVirtualStack;
 	
 	public void run(String arg) {

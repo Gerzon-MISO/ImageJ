@@ -5,8 +5,6 @@ import ij.process.*;
 
 /** This class represents a color look-up table. */
 public class LookUpTable extends Object {
-	private int width, height;
-	private byte[] pixels;
 	private int mapSize = 0;
 	private ColorModel cm;
 	private byte[] rLUT, gLUT,bLUT;

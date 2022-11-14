@@ -3,7 +3,6 @@ import ij.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.*;
-import java.awt.*;
 
 /** Implements ImageJ's Process/Enhance Contrast command. */
 public class ContrastEnhancer implements PlugIn, Measurements {
@@ -206,7 +205,6 @@ public class ContrastEnhancer implements PlugIn, Measurements {
 	}
 	
 	void normalize(ImageProcessor ip, double min, double max) {
-		int min2 = 0;
 		int max2 = 255;
 		int range = 256;
 		if (ip instanceof ShortProcessor)

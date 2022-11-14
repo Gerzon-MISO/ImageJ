@@ -3,12 +3,7 @@ import ij.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.*;
-import ij.plugin.ContrastEnhancer;
-import ij.measure.Calibration;
-import ij.util.Tools;
 import ij.plugin.frame.Recorder;
-import java.awt.*;
-import java.util.*;
 
 /** 
 This class implements the FFT, Inverse FFT and Redisplay Power Spectrum commands 
@@ -456,7 +451,6 @@ public class FFT implements PlugIn, Measurements {
 	}
 	
 	public static void swapQuadrants(ImageProcessor ip) {
- 		long time0 = System.currentTimeMillis();
  		ImageProcessor t1, t2;
 		int size = ip.getWidth()/2;
 		ip.setRoi(size,0,size,size);
@@ -472,12 +466,9 @@ public class FFT implements PlugIn, Measurements {
 		ip.insert(t1,size,size);
 		ip.insert(t2,0,0);
 		ip.resetRoi();
-		long time1 = System.currentTimeMillis();
-		//IJ.log(""+(time1-time0)+" "+ip);
 	}
 
 	void swapQuadrants(ImageStack stack) {
-		FHT fht = new FHT(new FloatProcessor(1, 1));
 		for (int i=1; i<=stack.size(); i++)
 			swapQuadrants(stack.getProcessor(i));
 	}

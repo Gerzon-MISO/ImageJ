@@ -25,7 +25,6 @@
 package ij.plugin;
 
 import ij.*;
-import ij.text.*;
 import ij.plugin.frame.Editor;
 import ij.process.ImageProcessor;
 import ij.gui.GUI;
@@ -102,7 +101,6 @@ public class CommandFinder implements PlugIn, ActionListener, WindowListener, Ke
 	protected void populateList(String matchingSubstring) {
 		String substring = matchingSubstring.toLowerCase();
 		ArrayList list = new ArrayList();
-		int count = 0;
 		for (int i = 0; i < commands.length; ++i) {
 			String commandName = commands[i];
 			String command = commandName.toLowerCase();
@@ -389,7 +387,6 @@ public class CommandFinder implements PlugIn, ActionListener, WindowListener, Ke
 					ca.menuItem = m;
 					ca.menuLocation = path;
 				}
-				CommandAction caAfter = (CommandAction) commandsHash.get(label);
 			}
 		}
 	}

@@ -3,12 +3,10 @@ import ij.*;
 import ij.gui.*;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.filter.Analyzer;
 
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-import java.util.*;
 
 /** This plugin generates gel profile plots that can be analyzed using
 the wand tool. It is similar to the "Gel Plotting Macros" in NIH Image. */
@@ -541,21 +539,14 @@ class PlotsCanvas extends ImageCanvas {
 			rt = ResultsTable.getResultsTable();
 			rt.reset();
 		}
-		//IJ.setColumnHeadings(" \tArea");
+
 		double perimeter = roi.getLength();
-		String error = "";
-		double circularity = 4.0*Math.PI*(stats.pixelCount/(perimeter*perimeter));
-		if (circularity<0.025)
-			error = " (error?)";
 		double area = stats.pixelCount+perimeter/2.0; // add perimeter/2 to account area under border
 		Calibration cal = imp.getCalibration();
 		area = area*cal.pixelWidth*cal.pixelHeight;
 		rect[counter] = roi.getBounds();
 
-		//area += (rect[counter].width/rect[counter].height)*1.5;
 		// adjustment for small peaks from NIH Image gel macros
-
-		int places = cal.scaled()?3:0;
 		rt.incrementCounter();
 		rt.addValue("Area", area);
 		rt.show("Results");
@@ -639,10 +630,6 @@ class PlotsCanvas extends ImageCanvas {
 	}
 
 	void debug() {
-		for (int i=0; i<counter; i++) {
-			double a = (actual[i]/actual[0])*100;
-			double m = (measured[i]/measured[0])*100;
-		}
 	}
 	
 }

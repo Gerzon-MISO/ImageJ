@@ -1,13 +1,9 @@
 package ij.gui;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.geom.*;
-import java.awt.event.KeyEvent;
 import java.util.*;
-import ij.*;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.filter.Analyzer;
 import ij.util.Tools;
 import ij.util.FloatArray;
 
@@ -1067,7 +1063,6 @@ public class ShapeRoi extends Roi {
 	 * @return <strong><code>false</code></strong> if the argument is null.
 	 */
 	boolean setShape(Shape rhs) {
-		boolean result = true;
 		if (rhs==null) return false;
 		if (shape.equals(rhs)) return false;
 		shape = rhs;

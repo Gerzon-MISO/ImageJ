@@ -8,10 +8,8 @@ import ij.plugin.ImageInfo;
 * replaced by ij.plugin.ImageInfo
 */
 public class Info implements PlugInFilter {
-    private ImagePlus imp;
 
 	public int setup(String arg, ImagePlus imp) {
-		this.imp = imp;
 		return DOES_ALL+NO_CHANGES;
 	}
 

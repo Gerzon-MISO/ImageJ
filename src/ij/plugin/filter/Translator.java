@@ -3,7 +3,6 @@ import ij.*;
 import ij.gui.*;
 import ij.process.*;
 import java.awt.*;
-import java.awt.geom.*;
 
 
 /** This plugin implements the Image/Translate command. */
@@ -13,10 +12,8 @@ public class Translator implements ExtendedPlugInFilter, DialogListener {
 	private static double yOffset = 15;
 	private ImagePlus imp;
 	private GenericDialog gd;
-	private PlugInFilterRunner pfr;
 	private static int interpolationMethod = ImageProcessor.NONE;
 	private String[] methods = ImageProcessor.getInterpolationMethods();
-	private boolean previewing;
 	private Overlay origOverlay;
 	private boolean overlayOnly;
 
@@ -41,8 +38,6 @@ public class Translator implements ExtendedPlugInFilter, DialogListener {
 	}
 
 	public int showDialog(ImagePlus imp, String command, PlugInFilterRunner pfr) {
-		this.pfr = pfr;
-		int digits = xOffset==(int)xOffset&&yOffset==(int)yOffset?1:3;
 		if (IJ.isMacro())
 			interpolationMethod = ImageProcessor.NONE;
 		gd = new GenericDialog("Translate");
@@ -53,13 +48,11 @@ public class Translator implements ExtendedPlugInFilter, DialogListener {
 			gd.addCheckbox("Overlay only", false);
 		gd.addPreviewCheckbox(pfr);
 		gd.addDialogListener(this);
-		previewing = true;
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			imp.setOverlay(origOverlay);
 			return DONE;
 		}
-		previewing = false;
 		return IJ.setupDialog(imp, flags);
 	}
 	

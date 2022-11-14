@@ -1,6 +1,5 @@
 package ij.plugin.filter;
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 import ij.*;
 import ij.process.*;
@@ -147,7 +146,6 @@ public class FractalBoxCounter implements PlugInFilter {
 
 	int count(int size, ImageProcessor ip) {
 		int[] histogram = new int[256];
-		int count;
 		int x = roi.x;
 		int y = roi.y;
 		int w = (size<=roi.width)?size:roi.width;

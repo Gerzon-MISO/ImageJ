@@ -7,10 +7,8 @@ import java.awt.datatransfer.*;
 import ij.*;
 import ij.gui.*;
 import ij.util.Tools;
-import ij.text.*;
 import ij.macro.*;
 import ij.plugin.MacroInstaller;
-import ij.plugin.Commands;
 import ij.plugin.Macro_Runner;
 import ij.plugin.JavaScriptEvaluator;
 import ij.io.SaveDialog;
@@ -66,7 +64,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 	static final String DEFAULT_DIR= "editor.dir";
 	static final String INSERT_SPACES= "editor.spaces";
 	static final String TAB_INC= "editor.tab-inc";
-	private final static int MACRO=0, JAVASCRIPT=1, BEANSHELL=2, PYTHON=3;
 	private final static String[] languages = {"Macro", "JavaScript", "BeanShell", "Python"};
 	private final static String[] extensions = {".ijm", ".js", ".bsh", ".py"};	
 	public static Editor currentMacroEditor;
@@ -78,17 +75,11 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 	private static int lineNumber = 1;
 	private static int xoffset, yoffset;
 	private static int nWindows;
-	private Menu fileMenu, editMenu;
+	private Menu fileMenu;
 	private Properties p = new Properties();
-	private int[] macroStarts;
-	private String[] macroNames;
 	private MenuBar mb;
 	private Menu macrosMenu;
-	private int nMacros;
-	private Program pgm;
 	private int eventCount;
-	private String shortcutsInUse;
-	private int inUseCount;
 	private MacroInstaller installer;
 	private static String defaultDir = Prefs.get(DEFAULT_DIR, null);;
 	private boolean dontShowWindow;
@@ -229,7 +220,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 		m.add(new MenuItem("Copy to Image Info"));
 		m.addActionListener(this);
 		mb.add(m);
-		editMenu = m;
 		if ((options&MENU_BAR)!=0)
 			setMenuBar(mb);
 		
@@ -623,9 +613,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 	}
 
 	void printString (PrintJob pjob, Graphics pg, String s) {
-		int pageNum = 1;
-		int linesForThisPage = 0;
-		int linesForThisJob = 0;
 		int topMargin = 30;
 		int leftMargin = 30;
 		int bottomMargin = 30;
@@ -654,8 +641,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 					nextLine = detabLine(nextLine);
 					if ((curHeight + fontHeight) > pageHeight) {
 						// New Page
-						pageNum++;
-						linesForThisPage = 0;
 						pg.dispose();
 						pg = pjob.getGraphics();
 						if (pg != null)
@@ -665,8 +650,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 					curHeight += fontHeight;
 					if (pg != null) {
 						pg.drawString (nextLine, leftMargin, curHeight - fontDescent);
-						linesForThisPage++;
-						linesForThisJob++;
 					} 
 				}
 			} while (nextLine != null);
@@ -1213,7 +1196,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 			setExtension(cmd);
 			return;
 		}
-		CheckboxMenuItem item = (CheckboxMenuItem)e.getSource();
 		if ("Tab Key Inserts Spaces".equals(cmd)) {
 			insertSpaces = e.getStateChange()==1;
 			Prefs.set(INSERT_SPACES, insertSpaces);
@@ -1608,7 +1590,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 	}
     
     void changeFontSize(boolean larger) {
-        int in = fontSizeIndex;
         if (larger) {
             fontSizeIndex++;
             if (fontSizeIndex==sizes.length)
@@ -1762,7 +1743,7 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 		if (downloading || downloadUrl==null)
 			return;
 		downloading = true;
-		boolean ok = Macro_Runner.downloadJar(downloadUrl);
+		Macro_Runner.downloadJar(downloadUrl);
 		downloading = false;
 	}
 

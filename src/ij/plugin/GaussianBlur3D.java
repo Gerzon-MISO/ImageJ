@@ -2,7 +2,6 @@ package ij.plugin;
 import ij.*;
 import ij.process.*;
 import ij.gui.*;
-import java.awt.*;
 import ij.plugin.filter.*;
 
 public class GaussianBlur3D implements PlugIn {
@@ -84,7 +83,6 @@ public class GaussianBlur3D implements PlugIn {
 		int channels = imp.getNChannels();
 		int slices = imp.getNSlices();
 		int timePoints = imp.getNFrames();
-		int nVolumes = channels*timePoints;
 		for (int c=1; c<=channels; c++) {
 			if (slices==1) {
 				ImageStack stack = getVolume(imp, c, 1);

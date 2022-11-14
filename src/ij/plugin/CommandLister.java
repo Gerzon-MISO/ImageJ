@@ -1,9 +1,6 @@
 package ij.plugin;
 import ij.*;
-import ij.text.*;
-import ij.util.*;
 import java.util.*;
-import java.awt.*;
 import java.awt.event.*;
 
 /** This class is used by the Plugins/Shortcuts/List Shortcuts 
@@ -80,6 +77,5 @@ public class CommandLister implements PlugIn {
 		ArrayList list2 = new ArrayList();
 		for (int i=0; i<list.length; i++)
 			list2.add(list[i]);
-		TextWindow tw = new TextWindow(title, headings, list2, 600, 500);
 	}
 }

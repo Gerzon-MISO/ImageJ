@@ -5,7 +5,6 @@ import ij.gui.*;
 import ij.measure.*;
 import ij.plugin.ContrastEnhancer;
 import java.awt.*;
-import java.util.*;
 
 /** 
 This class implements the Process/FFT/Bandpass Filter command. It is based on 
@@ -19,8 +18,6 @@ Joachim Walter's FFT Filter plugin at "http://imagej.nih.gov/ij/plugins/fft-filt
 public class FFTFilter implements  PlugInFilter, Measurements {
 
 	private ImagePlus imp;
-	private String arg;
-	private static int filterIndex = 1;
 	private FHT fht;
 	private int slice;
 	private int stackSize = 1;	
@@ -37,7 +34,6 @@ public class FFTFilter implements  PlugInFilter, Measurements {
 	private static boolean processStack;
 
 	public int setup(String arg, ImagePlus imp) {
-		this.arg = arg;
  		this.imp = imp;
  		if (imp==null)
  			{IJ.noImage(); return DONE;}

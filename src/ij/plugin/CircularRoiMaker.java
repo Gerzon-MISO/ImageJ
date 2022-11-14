@@ -8,7 +8,6 @@ import java.awt.*;
 public class CircularRoiMaker implements PlugIn, DialogListener {
 	private static double saveRadius;
 	private double xcenter, ycenter, radius;
-	private boolean bAbort;
 	private ImagePlus imp;
 	private Calibration cal;
 

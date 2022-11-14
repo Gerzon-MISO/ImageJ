@@ -114,48 +114,28 @@ class BMPDecoder {
         void getFileHeader()  throws IOException, Exception {
                 // Actual contents (14 bytes):
                 short fileType = 0x4d42;// always "BM"
-                int fileSize;                   // size of file in bytes
-                short reserved1 = 0;    // always 0
-                short reserved2 = 0;    // always 0
 
                 fileType = readShort();
                 if (fileType != 0x4d42)
                         throw new Exception("Not a BMP file");  // wrong file type
-                fileSize = readInt();
-                reserved1 = readShort();
-                reserved2 = readShort();
                 bitmapOffset = readInt();
         }
 
         void getBitmapHeader() throws IOException {
         
                 // Actual contents (40 bytes):
-                int size;                               // size of this header in bytes
-                short planes;                   // no. of color planes: always 1
-                int sizeOfBitmap;               // size of bitmap in bytes (may be 0: if so, calculate)
-                int horzResolution;             // horizontal resolution, pixels/meter (may be 0)
-                int vertResolution;             // vertical resolution, pixels/meter (may be 0)
                 int colorsUsed;                 // no. of colors in palette (if 0, calculate)
-                int colorsImportant;    // no. of important colors (appear first in palette) (0 means all are important)
-                int noOfPixels;
 
-                size = readInt();
                 width = readInt();
                 height = readInt();
-                planes = readShort();
                 bitsPerPixel = readShort();
                 compression = readInt();
-                sizeOfBitmap = readInt();
-                horzResolution = readInt();
-                vertResolution = readInt();
                 colorsUsed = readInt();
-                colorsImportant = readInt();
                 if (bitsPerPixel==24)
-                    colorsUsed = colorsImportant = 0;
+                    colorsUsed = 0;
 
                 topDown = (height < 0);
                 if (topDown) height = -height;
-                noOfPixels = width * height;
 
                 // Scan line is padded with zeroes to be a multiple of four bytes
                 scanLineSize = ((width * bitsPerPixel + 31) / 32) * 4;
@@ -195,12 +175,10 @@ class BMPDecoder {
                         g = new byte[noOfEntries];
                         b = new byte[noOfEntries];
 
-                        int reserved;
                         for (int i = 0; i < noOfEntries; i++) {
                                 b[i] = (byte)is.read();
                                 g[i] = (byte)is.read();
                                 r[i] = (byte)is.read();
-                                reserved = is.read();
                                 curPos += 4;
                         }
                 }
@@ -257,7 +235,6 @@ class BMPDecoder {
                         int b0 = (((int)(rawData[k++])) & mask);
                         int b1 = (((int)(rawData[k++])) & mask) << 8;
                         int b2 = (((int)(rawData[k++])) & mask) << 16;
-                        int b3 = (((int)(rawData[k++])) & mask) << 24; // this gets ignored!
                         intData[j] = 0xff000000 | b0 | b1 | b2;
                         j++;
                 }

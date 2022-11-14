@@ -1,10 +1,8 @@
 package ij.plugin;
 import ij.*;
 import ij.io.*;
-import ij.process.*;
 import java.awt.*;
 import java.io.*;
-import java.awt.image.*;
 
 /** Implements the File/Save As/BMP command. Based on BMPFile class from
    http://www.javaworld.com/javaworld/javatips/jw-javatip60-p2.html */
@@ -15,14 +13,12 @@ public class BMP_Writer implements PlugIn {
  private final static int BITMAPINFOHEADER_SIZE = 40;
  //--- Private variable declaration
  //--- Bitmap file header
- private byte bitmapFileHeader [] = new byte [14];
  private byte bfType [] =  {(byte)'B', (byte)'M'};
  private int bfSize = 0;
  private int bfReserved1 = 0;
  private int bfReserved2 = 0;
  private int bfOffBits = BITMAPFILEHEADER_SIZE + BITMAPINFOHEADER_SIZE;
  //--- Bitmap info header
- private byte bitmapInfoHeader [] = new byte [40];
  private int biSize = BITMAPINFOHEADER_SIZE;
  private int biWidth = 0;
  private int padWidth = 0;
@@ -161,24 +157,21 @@ public class BMP_Writer implements PlugIn {
    if (pad == 4)       // <==== Bug correction
      pad = 0;            // <==== Bug correction
 
-   int counter=0;
    for(int row = biHeight; row>0; row--) {
-     if (row%20==0)
-   IJ.showProgress((double)(biHeight-row)/biHeight);
+    if (row%20==0)
+      IJ.showProgress((double)(biHeight-row)/biHeight);
      for(int col = 0; col<biWidth; col++) {
-   if(biBitCount==24) {
-     value = intBitmap [(row-1)*biWidth + col ];
-     rgb [0] = (byte) (value & 0xFF);
-     rgb [1] = (byte) ((value >> 8) & 0xFF);
-     rgb [2] = (byte) ((value >> 16) & 0xFF);
-     bfo.write(rgb);
-   } else
-     bfo.write(byteBitmap [(row-1)*biWidth + col ]);
-   ++counter;
+      if(biBitCount==24) {
+        value = intBitmap [(row-1)*biWidth + col ];
+        rgb [0] = (byte) (value & 0xFF);
+        rgb [1] = (byte) ((value >> 8) & 0xFF);
+        rgb [2] = (byte) ((value >> 16) & 0xFF);
+        bfo.write(rgb);
+      } else
+        bfo.write(byteBitmap [(row-1)*biWidth + col ]);
      }
      for (i = 1; i <= pad; i++)
-   bfo.write (0x00);
-     counter += pad;
+      bfo.write (0x00);
    }
  }
 

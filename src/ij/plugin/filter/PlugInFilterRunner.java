@@ -2,10 +2,6 @@ package ij.plugin.filter;
 import ij.*;
 import ij.process.*;
 import ij.gui.*;
-import ij.plugin.filter.PlugInFilter.*;
-import ij.plugin.filter.*;
-import ij.measure.Calibration;
-import ij.macro.Interpreter;
 import java.awt.*;
 import java.util.*;
 
@@ -189,7 +185,6 @@ public class PlugInFilterRunner implements Runnable, DialogListener {
 		prepareProcessor(ip, imp);
 		ip.setLineWidth(Line.getWidth());		//in contrast to imp.getProcessor, stack.getProcessor does not do this
 		FloatProcessor fp = null;
-		int slices = imp.getNSlices();
 		for (int i=firstSlice; i<=endSlice; i++) {
 			if (i != processedAsPreview) {
 				announceSliceNumber(i);
@@ -205,7 +200,6 @@ public class PlugInFilterRunner implements Runnable, DialogListener {
 	/** prepare an ImageProcessor by setting roi and CalibrationTable.
 	 */
 	private void prepareProcessor(ImageProcessor ip, ImagePlus imp) {
-		ImageProcessor mask = imp.getMask();
 		Roi roi = imp.getRoi();
 		if (roi!=null && roi.isArea())
 			ip.setRoi(roi);

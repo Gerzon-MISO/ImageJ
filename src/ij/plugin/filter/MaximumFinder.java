@@ -1,5 +1,5 @@
 package ij.plugin.filter;
-import ij.plugin.filter.*;
+
 import ij.*;
 import ij.gui.*;
 import ij.measure.*;
@@ -519,7 +519,6 @@ public class MaximumFinder implements ExtendedPlugInFilter, DialogListener {
             return null;
 
         ByteProcessor outIp;
-        byte[] pixels;
         if (outputType == SEGMENTED) {
             // Segmentation required, convert to 8bit (also for 8-bit images, since the calibration
             // may have a negative slope). outIp has background 0, maximum areas 255
@@ -1307,7 +1306,7 @@ public class MaximumFinder implements ExtendedPlugInFilter, DialogListener {
                     isSet[(i+7)%8] = true;
                 }
             int transitions=0;
-            for (int i=0, mask=1; i<8; i++) {
+            for (int i=0; i<8; i++) {
                 if (isSet[i] != isSet[(i+1)%8])
                     transitions++;
             }

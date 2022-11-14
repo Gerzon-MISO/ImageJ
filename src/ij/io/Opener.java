@@ -8,7 +8,6 @@ import ij.text.TextWindow;
 import ij.util.Java2;
 import ij.measure.ResultsTable;
 import ij.macro.Interpreter;
-import ij.util.Tools;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -17,7 +16,6 @@ import java.net.*;
 import java.util.*;
 import java.util.zip.*;
 import javax.swing.*;
-import javax.swing.filechooser.*;
 import java.awt.event.KeyEvent;
 import javax.imageio.ImageIO;
 import java.lang.reflect.Method;
@@ -32,7 +30,6 @@ public class Opener {
 		TIFF_AND_DICOM=14,CUSTOM=15, AVI=16, OJJ=17, TABLE=18, RAW=19; // don't forget to also update 'types'
 	public static final String[] types = {"unknown","tif","dcm","fits","pgm",
 		"jpg","gif","lut","bmp","zip","java/txt","roi","txt","png","t&d","custom","ojj","table","raw"};
-	private static String defaultDirectory = null;
 	private int fileType;
 	private boolean error;
 	private boolean isRGB48;
@@ -604,13 +601,11 @@ public class Opener {
 			if (name.endsWith(".dcm")) {
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				byte[] buf = new byte[4096];
-				int len, byteCount=0, progress=0;
+				int len;
 				while (true) {
 					len = zis.read(buf);
 					if (len<0) break;
 					out.write(buf, 0, len);
-					byteCount += len;
-					//IJ.showProgress((double)(byteCount%fileSize)/fileSize);
 				}
 				byte[] bytes = out.toByteArray();
 				out.close();

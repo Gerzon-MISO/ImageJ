@@ -1,9 +1,7 @@
 package ij.plugin.frame;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
 import ij.*;
-import ij.plugin.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.*;
@@ -966,7 +964,6 @@ public class ContrastAdjuster extends PlugInDialog implements Runnable,
 			for (int i=0; i<nImages; i++) {
 				ImagePlus img2 = WindowManager.getImage(list[i]);
 				if (img2==null) continue;
-				int nChannels2 = img2.getNChannels();
 				if (img2.isComposite() && img2.getBitDepth()==depth && img2.getID()!=id
 				&& img2.getNChannels()==nChannels && img2.getWindow()!=null) {
 					int channel = img2.getChannel();

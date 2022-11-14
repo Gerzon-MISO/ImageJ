@@ -2,8 +2,6 @@ package ij.plugin.filter;
 import ij.*;
 import ij.gui.*;
 import ij.process.*;
-import ij.measure.*;
-import ij.util.Tools;
 import java.awt.*;
 
 
@@ -533,7 +531,6 @@ public class BackgroundSubtracter implements ExtendedPlugInFilter, DialogListene
                 pixels[i] = -pixels[i];
         if (doPresmooth)
             filter3x3(fp, MEAN);
-        double[] minmax = Tools.getMinMax(pixels);
         if (Thread.currentThread().isInterrupted()) return;
         FloatProcessor smallImage = shrink ? shrinkImage(fp, ball.shrinkFactor) : fp;
         if (Thread.currentThread().isInterrupted()) return;

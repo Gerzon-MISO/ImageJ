@@ -7,7 +7,6 @@ import ij.gui.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.text.*;
-import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.*;
 import ij.plugin.Colors;
 import ij.plugin.LutLoader;
@@ -122,9 +121,7 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	private int options;
 	private int measurements;
 	private Calibration calibration;
-	private String arg;
 	private double fillColor;
-	private boolean thresholdingLUT;
 	private ImageProcessor drawIP;
 	private int width,height;
 	private boolean canceled;
@@ -132,7 +129,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	private IndexColorModel customLut;
 	private int particleCount;
 	private int maxParticleCount = 0;
-	private int totalCount;
 	private ResultsTable summaryTable;
 	private Wand wand;
 	private int imageType, imageType2;
@@ -236,7 +232,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	}
 	
 	public int setup(String arg, ImagePlus imp) {
-		this.arg = arg;
 		this.imp = imp;
 		IJ.register(ParticleAnalyzer.class);
 		if (imp==null) {
@@ -593,7 +588,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 		int offset;
 		double value;
 		int inc = Math.max(r.height/25, 1);
-		int mi = 0;
 		ImageWindow win = imp.getWindow();
 		if (win!=null)
 			win.running = true;
@@ -646,7 +640,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 		if (addToManager && roiManager!=null)
 			roiManager.setEditMode(imp, true);
 		maxParticleCount = (particleCount > maxParticleCount) ? particleCount : maxParticleCount;
-		totalCount += particleCount;
 		if (!canceled)
 			showResults();
 		return true;
@@ -693,8 +686,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 			return;
 		for (int i=start; i<areas.length; i++)
 			sum += areas[i];
-		int places = Analyzer.getPrecision();
-		Calibration cal = imp.getCalibration();
 		summaryTable.addValue("Count", particleCount);
 		summaryTable.addValue("Total Area", sum);
 		summaryTable.addValue("Average Size", sum/particleCount);
@@ -800,7 +791,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 		double t1 = ip.getMinThreshold();
 		double t2 = ip.getMaxThreshold();
 		boolean invertedLut = imp.isInvertedLut();
-		boolean byteImage = ip instanceof ByteProcessor;
 		if (ip instanceof ShortProcessor)
 			imageType = SHORT;
 		else if (ip instanceof FloatProcessor)

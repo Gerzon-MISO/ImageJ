@@ -1,10 +1,7 @@
 package ij.plugin;
 import ij.*;
 import ij.gui.*;
-import ij.util.*;
 import ij.measure.ResultsTable;
-import java.awt.*;
-import java.io.*;
 import java.util.*;
 
 /** Implements the Plugins/Hotkeys/Create Shortcut and Remove commands. */
@@ -153,7 +150,6 @@ public class Hotkeys implements PlugIn {
 	
 	String[] getAvailableShortcuts() {
 		Vector v = new Vector();
-		String[] existingShortcuts = (new CommandLister()).getShortcuts();
 		for (char c = '0'; c<='9'; c++) {
 			String shortcut = ""+c;
 			if (!Menus.shortcutInUse(shortcut))

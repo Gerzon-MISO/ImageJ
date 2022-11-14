@@ -8,8 +8,6 @@ import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.Recorder;
 import ij.util.Java2;
 import java.awt.*;
-import java.awt.image.*;
-import java.awt.event.KeyEvent;
 import java.util.*;
 import java.awt.geom.*;
 
@@ -24,7 +22,6 @@ public class PointRoi extends PolygonRoi {
 	public static final int HYBRID=0, CROSS=1, CROSSHAIR=1, DOT=2, CIRCLE=3;
 	private static final String TYPE_KEY = "point.type";
 	private static final String SIZE_KEY = "point.size";
-	private static final String CROSS_COLOR_KEY = "point.cross.color";
 	private static final int TINY=1, SMALL=3, MEDIUM=5, LARGE=7, EXTRA_LARGE=11, XXL=17, XXXL=25;
 	private static final BasicStroke twoPixelsWide = new BasicStroke(2);
 	private static final BasicStroke threePixelsWide = new BasicStroke(3);
@@ -32,7 +29,6 @@ public class PointRoi extends PolygonRoi {
 	private static int defaultType = HYBRID;
 	private static int defaultSize = SMALL;
 	private static Font font;
-	private static Color defaultCrossColor = Color.white;
 	private static int fontSize = 9;
 	public static final int MAX_COUNTERS = 100;
 	private static String[] counterChoices;

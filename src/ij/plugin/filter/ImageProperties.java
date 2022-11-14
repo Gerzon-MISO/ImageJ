@@ -136,7 +136,6 @@ public class ImageProperties implements PlugInFilter, TextListener {
  		String yunit2 = gd.getNextString();
  		double pixelDepth = gd.getNextNumber();
  		String zunit2 = gd.getNextString();
- 		boolean reset = false;
  		boolean xUnitChanged=false,yUnitChanged=false,zUnitChanged=false;
  		if (legacyMacro) {
 			if (!unit.equals(cal.getUnit())) {
@@ -294,10 +293,6 @@ public class ImageProperties implements PlugInFilter, TextListener {
    	public void textValueChanged(TextEvent e) {
    		textChangedCount++;
 		Object source = e.getSource();
-        
-        int channels = (int)Tools.parseDouble(((TextField)nfields.elementAt(2)).getText(),-99);
-        int depth = (int)Tools.parseDouble(((TextField)nfields.elementAt(3)).getText(),-99);
-        int frames = (int)Tools.parseDouble(((TextField)nfields.elementAt(4)).getText(),-99);
         
 		double newPixelWidth = calPixelWidth;
 		String newWidthText = pixelWidthField.getText();

@@ -65,7 +65,6 @@ public class FileOpener {
 
 		ImagePlus imp=null;
 		Object pixels;
-		ProgressBar pb=null;
 	    ImageProcessor ip;
 		
 		ColorModel cm = createColorModel(fi);
@@ -176,7 +175,6 @@ public class FileOpener {
 	
 	public ImageProcessor openProcessor() {
 		Object pixels;
-		ProgressBar pb=null;
 		ImageProcessor ip = null;		
 		ColorModel cm = createColorModel(fi);
 		switch (fi.fileType) {

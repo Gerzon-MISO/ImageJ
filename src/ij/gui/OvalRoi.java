@@ -1,6 +1,5 @@
 package ij.gui;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.geom.*;
 import ij.*;
 import ij.process.*;
@@ -73,7 +72,7 @@ public class OvalRoi extends Roi {
 		int ox = offScreenX(sx);
 		int oy = offScreenY(sy);
 		//IJ.log("moveHandle: "+activeHandle+" "+ox+" "+oy);
-		int x1=x, y1=y, x2=x+width, y2=y+height, xc=x+width/2, yc=y+height/2;
+		int x2=x+width, y2=y+height, xc=x+width/2, yc=y+height/2;
 		int w2 = (int)(0.14645*width);
 		int h2 = (int)(0.14645*height);
 		if (width > 7 && height > 7) {
@@ -371,7 +370,6 @@ public class OvalRoi extends Roi {
 		inside or near a handle, otherwise returns -1. */
 	public int isHandle(int sx, int sy) {
 		if (clipboard!=null || ic==null) return -1;
-		double mag = ic.getMagnification();
 		int size = getHandleSize()+3;
 		int halfSize = size/2;
 		int sx1 = screenX(x) - halfSize;

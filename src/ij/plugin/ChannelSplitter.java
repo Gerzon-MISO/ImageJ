@@ -1,10 +1,7 @@
 package ij.plugin;
 import ij.*;
 import ij.process.*;
-import ij.gui.*;
 import ij.measure.Calibration;
-import ij.plugin.HyperStackReducer;
-import java.awt.*;
 import java.util.Vector;
 
 /** This plugin implements the Image/Color/Split Channels command. */
@@ -72,7 +69,6 @@ public class ChannelSplitter implements PlugIn {
 		int channels = imp.getNChannels();
 		int slices = imp.getNSlices();
 		int frames = imp.getNFrames();
-		int bitDepth = imp.getBitDepth();
 		int size = slices*frames;
 		Vector images = new Vector();
 		HyperStackReducer reducer = new HyperStackReducer(imp);

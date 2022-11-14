@@ -76,7 +76,6 @@ public class Commands extends PlugInFrame implements ActionListener, ItemListene
         c.gridx = 0; c.gridy = 2; c.anchor = GridBagConstraints.CENTER;
         add(button, c);
 		pack();
-		Dimension size = getSize();
 		Point loc = Prefs.getLocation(LOC_KEY);
 		if (loc!=null)
 			setLocation(loc);

@@ -1302,12 +1302,11 @@ public class Plot implements Cloneable {
 		int nObjects = getNumPlotObjects(mask, includeHidden);
 		String[] names = new String[nObjects];
 		if (names.length == 0) return names;
-		int iData = 1, iArrow = 1, iLine = 1, iText = 1,  iBox = 1, iShape = 1; //Human readable counters of each object type
+		int iData = 1, iArrow = 1, iLine = 1, iText = 1, iShape = 1; //Human readable counters of each object type
 		int i = 0;
 		for (PlotObject plotObject : allPlotObjects) {
 			int type = plotObject.type;
 			if ((type & mask) == 0 || (!includeHidden && plotObject.hasFlag(PlotObject.HIDDEN))) continue;
-			String label = plotObject.label;
 			switch (type) {
 				case PlotObject.XY_DATA:
 					names[i] = "Data Set "+iData+": "+(plotObject.label != null ?
@@ -1417,7 +1416,6 @@ public class Plot implements Cloneable {
 			plotObject.unsetFlag(PlotObject.HIDDEN);
 		plotObject.color = Colors.decode(items[0].trim(), plotObject.color);
 		plotObject.color2 = Colors.decode(items[1].trim(), null);
-		float lineWidth = plotObject.lineWidth;
 		if (items.length >= 3) try {
 			plotObject.lineWidth = Float.parseFloat(items[2].trim());
 		} catch (NumberFormatException e) {};
@@ -2516,7 +2514,6 @@ public class Plot implements Cloneable {
 			if (xMin==xMax) {
 				if (hasFlag(X_NUMBERS)) {
 					String s = IJ.d2s(xMin,getDigits(xMin, 0.001*xMin, 5, suggestedDigits));
-					int y = yBasePxl;
 					ip.drawString(s, xBasePxl-ip.getStringWidth(s)/2, yOfXAxisNumbers);
 				}
 			} else {
@@ -3446,8 +3443,6 @@ public class Plot implements Cloneable {
 
 	private void drawHorizontalErrorBars(float[] x, float[] y, float[] e) {
 		int nPoints = Math.min(Math.min(x.length, y.length), e.length);
-		float[] xpoints = new float[2];
-		float[] ypoints = new float[2];
 		for (int i=0; i<nPoints; i++) {
 			if (Float.isNaN(x[i]) || Float.isNaN(y[i]) || (logXAxis && !(y[i] >0))) continue;
 			int y0 = scaleY(y[i]);

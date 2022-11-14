@@ -1,10 +1,8 @@
 package ij.plugin;
 import ij.*;
 import ij.gui.*;
-import ij.process.*;
 import ij.measure.Calibration;
 import ij.plugin.frame.Recorder;
-import java.awt.Point;
 
 /** This plugin animates stacks. */
 public class Animator implements PlugIn {
@@ -37,7 +35,6 @@ public class Animator implements PlugIn {
 			return;
 		}
 		swin = (StackWindow)win;
-		ImageStack stack = imp.getStack();
 		slice = imp.getCurrentSlice();
 		IJ.register(Animator.class);
 		

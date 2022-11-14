@@ -1,6 +1,5 @@
 package ij.gui;
 import ij.*;
-import ij.process.*;
 import ij.util.*;
 import ij.plugin.Colors;
 import java.awt.*;
@@ -68,16 +67,7 @@ public class ColorChooser implements TextListener, AdjustmentListener {
 		panel.repaint();
 	}
 
-	public synchronized void adjustmentValueChanged(AdjustmentEvent e) {
-		Object source = e.getSource();
-		for (int i=0; i<sliders.size(); i++) {
-			if (source==sliders.elementAt(i)) {
-				Scrollbar sb = (Scrollbar)source;
-				TextField tf = (TextField)colors.elementAt(i);
-			}
-		}
-	}
-
+	public synchronized void adjustmentValueChanged(AdjustmentEvent e) {}
 }
 
 class ColorPanel extends Panel {

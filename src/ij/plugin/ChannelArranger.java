@@ -3,7 +3,6 @@ import ij.*;
 import ij.process.*;
 import ij.gui.*;
 import java.awt.*;
-import ij.plugin.ChannelSplitter;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.util.Vector;
@@ -293,7 +292,6 @@ class ThumbnailsCanvas extends Canvas implements MouseListener, MouseMotionListe
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		cImp.setPosition(currentChannel, currentSlice, currentFrame);
-		CompositeImage cImp = (CompositeImage) this.cImp;
 		IJ.run(cmd);
 		repaint();
 		setCursor(defaultCursor);

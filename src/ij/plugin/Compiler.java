@@ -3,7 +3,6 @@ import ij.*;
 import ij.gui.*;
 import ij.io.*;
 import ij.plugin.frame.Editor;
-import ij.plugin.Macro_Runner;
 import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import java.awt.Font;
@@ -20,7 +19,7 @@ public class Compiler implements PlugIn, FilenameFilter {
 		+"be located in either plugins/jars or plugins/lib.\n \n"
 		+"The javac command line will be displayed in\n"
 		+"the Log window if ImageJ is in debug mode.";
-	private static final int TARGET14=0, TARGET15=1, TARGET16=2,  TARGET17=3,  TARGET18=4, TARGET19=5;
+	private static final int TARGET16=2,  TARGET17=3,  TARGET18=4, TARGET19=5;
 	private static final String[] targets = {"1.4", "1.5", "1.6", "1.7", "1.8", "1.9"};
 	private static final String TARGET_KEY = "javac.target";
 	private static CompilerTool compilerTool;
@@ -165,7 +164,7 @@ public class Compiler implements PlugIn, FilenameFilter {
 	 // the path to the directory containing the plugin, 
 	 // and paths to any .jar files in the plugins folder.
 	 String getClassPath(String path) {
-		long start = System.currentTimeMillis();
+		System.currentTimeMillis();
 		StringBuffer sb = new StringBuffer();
 		sb.append(System.getProperty("java.class.path"));
 		File f = new File(path);

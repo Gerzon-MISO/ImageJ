@@ -1,7 +1,6 @@
 package ij;
 import java.awt.*;
 import java.awt.image.*;
-import java.net.URL;
 import java.util.*;
 import ij.process.*;
 import ij.io.*;
@@ -811,7 +810,6 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 		the display. Set 'title' to null to leave the title unchanged. */
     public void setStack(String title, ImageStack newStack) {
 		int bitDepth1 = getBitDepth();
-		int previousStackSize = getStackSize();
 		int newStackSize = newStack.getSize();
 		if (newStackSize==0)
 			throw new IllegalArgumentException("Stack is empty");		
@@ -2905,8 +2903,6 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 	 public void paste() {
 		if (clipboard==null)
 			return;
-		int cType = clipboard.getType();
-		int iType = getType();
         int w = clipboard.getWidth();
         int h = clipboard.getHeight();
 		Roi cRoi = clipboard.getRoi();

@@ -5,11 +5,9 @@ import ij.process.*;
 import ij.gui.*;
 import java.awt.*;
 import ij.measure.*;
-import ij.plugin.filter.*;
 import ij.plugin.frame.Recorder;
 import java.awt.event.*;
 import java.util.*;
-import java.lang.*;
 import java.awt.image.ColorModel;
 
 /** This plugin, which concatenates two or more images or stacks,
@@ -37,7 +35,6 @@ public class Concatenator implements PlugIn, ItemListener{
 	private int stackSize;
 	private double min = 0, max = Float.MAX_VALUE;
 	private int maxWidth, maxHeight;
-	private boolean showingDialog;
 
 	
 	/** Optional string argument sets the name dialog boxes if called from another plugin. */
@@ -147,7 +144,7 @@ public class Concatenator implements PlugIn, ItemListener{
 		ImagePlus currentImp = null;
 		ImageStack concat_Stack = null;
 		stackSize = 0;
-		int dataType = 0, width= 0, height = 0;
+		int dataType = 0;
 		Calibration cal = null;
 		int count = 0;
 		findMaxDimensions(images);
@@ -157,8 +154,6 @@ public class Concatenator implements PlugIn, ItemListener{
 				if (firstImage) { // Initialise based on first image
 					//concat_Imp = images[i];
 					cal = currentImp.getCalibration();
-					width = currentImp.getWidth();
-					height = currentImp.getHeight();
 					stackSize = currentImp.getNSlices();
 					dataType = currentImp.getType();
 					ColorModel cm = currentImp.getProcessor().getColorModel();
@@ -319,7 +314,6 @@ public class Concatenator implements PlugIn, ItemListener{
 		macro = macro || (IJ.isMacro()&&Macro.getOptions()!=null);
 		if (Menus.commandInUse("Stack to Image5D") && !batch)
 			im4D = true;
-		showingDialog = Macro.getOptions()==null;
 		if (macro) {
 			String options = Macro.getOptions();
 			if (options.contains("stack1")&&options.contains("stack2"))

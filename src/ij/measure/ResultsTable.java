@@ -1,7 +1,6 @@
 package ij.measure;
 import ij.*;
 import ij.plugin.filter.Analyzer;
-import ij.plugin.frame.Editor;
 import ij.text.*;
 import ij.process.*;
 import ij.gui.Roi;
@@ -1283,7 +1282,6 @@ public class ResultsTable implements Cloneable {
 				nonNumericIndex = i;
 			}
 		}
-		boolean csv = path.endsWith(".csv");
 		if (nonNumericCount==0)
 			return 0; // assume this is all-numeric table
 		if (nonNumericCount==1 && nonNumericIndex==1)
@@ -1428,7 +1426,6 @@ public class ResultsTable implements Cloneable {
 		for (int i=0; i<columnHeadings.length; i++)
 			columnIndices[i] = getColumnIndex(columnHeadings[i]);
 
-		Program pgm = (new Tokenizer()).tokenize(macro);
 		StringBuilder sb = new StringBuilder(1000);
 		sb.append("var ");
 		for (int i=0; i<columnNames.length; i++) {  // create 'var' statement with 'real' data values, so errors are less likely

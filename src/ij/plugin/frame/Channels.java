@@ -45,7 +45,6 @@ public class Channels extends PlugInDialog implements PlugIn, ItemListener, Acti
 	private Checkbox[] checkbox;
 	private Button helpButton, moreButton;
 	private static Channels instance;
-	private int id;
 	private static Point location;
 	private PopupMenu pm;
 

@@ -3,15 +3,12 @@ import ij.process.*;
 import ij.util.*;
 import ij.gui.ImageWindow;
 import ij.plugin.MacroInstaller;
-import ij.gui.Toolbar;
-import ij.macro.Interpreter;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import java.applet.Applet;
-import java.awt.event.*;
 import java.util.zip.*;
 
 /**
@@ -54,7 +51,6 @@ public class Menus {
 
 	private static ImageJ ij;
 	private static Applet applet;
-	private Hashtable demoImagesTable = new Hashtable();
 	private static String ImageJPath, pluginsPath, macrosPath;
 	private static Properties menus;
 	private static Properties menuSeparators;
@@ -87,7 +83,6 @@ public class Menus {
 		
 	Menus(ImageJ ijInstance, Applet appletInstance) {
 		ij = ijInstance;
-		String title = ij!=null?ij.getTitle():null;
 		applet = appletInstance;
 		instance = this;
 	}
@@ -107,14 +102,12 @@ public class Menus {
 		macroShortcuts = null;
 		setupPluginsAndMacrosPaths();
 		Menu file = getMenu("File");
-		Menu newMenu = getMenu("File>New", true);
 		addPlugInItem(file, "Open...", "ij.plugin.Commands(\"open\")", KeyEvent.VK_O, false);
 		addPlugInItem(file, "Open Next", "ij.plugin.NextImageOpener", KeyEvent.VK_O, true);
 		Menu openSamples = getMenu("File>Open Samples", true);
 		openSamples.addSeparator();
 		addPlugInItem(openSamples, "Cache Sample Images ", "ij.plugin.URLOpener(\"cache\")", 0, false);
-		addOpenRecentSubMenu(file);
-		Menu importMenu = getMenu("File>Import", true);		
+		addOpenRecentSubMenu(file);		
 		Menu showFolderMenu = new Menu("Show Folder");
 		file.add(showFolderMenu);
 		addPlugInItem(showFolderMenu, "Image", "ij.plugin.SimpleCommands(\"showdirImage\")", 0, false);
@@ -150,7 +143,6 @@ public class Menus {
 		addPlugInItem(edit, "Invert", "ij.plugin.filter.Filters(\"invert\")", KeyEvent.VK_I, true);
 		edit.addSeparator();
 		getMenu("Edit>Selection", true);
-		Menu optionsMenu = getMenu("Edit>Options", true);
 		
 		Menu image = getMenu("Image");
 		Menu imageType = getMenu("Image>Type");
@@ -174,7 +166,6 @@ public class Menus {
 		getMenu("Image>Stacks", true);
 		getMenu("Image>Stacks>Animation_", true);
 		getMenu("Image>Stacks>Tools_", true);
-		Menu hyperstacksMenu = getMenu("Image>Hyperstacks", true);
 		image.addSeparator();
 		addPlugInItem(image, "Crop", "ij.plugin.Resizer(\"crop\")", KeyEvent.VK_X, true);
 		addPlugInItem(image, "Duplicate...", "ij.plugin.Duplicator", KeyEvent.VK_D, true);
@@ -197,7 +188,6 @@ public class Menus {
 		getMenu("Process>Binary", true);
 		getMenu("Process>Math", true);
 		getMenu("Process>FFT", true);
-		Menu filtersMenu = getMenu("Process>Filters", true);
 		process.addSeparator();
 		getMenu("Process>Batch", true);
 		addPlugInItem(process, "Image Calculator...", "ij.plugin.ImageCalculator", 0, false);
@@ -223,7 +213,6 @@ public class Menus {
 		addPlugInItem(analyzeMenu, "Plot Profile", "ij.plugin.Profiler(\"plot\")", KeyEvent.VK_K, false);
 		addPlugInItem(analyzeMenu, "Surface Plot...", "ij.plugin.SurfacePlotter", 0, false);
 		getMenu("Analyze>Gels", true);
-		Menu toolsMenu = getMenu("Analyze>Tools", true);
 
 		// the plugins will be added later, after a separator
 		addPluginsMenu();
@@ -250,7 +239,6 @@ public class Menus {
 		addPlugInItem(help, "Release Notes...", "ij.plugin.BrowserLauncher(\"http://wsr.imagej.net/notes.html\")", 0, false);
 		addPlugInItem(help, "Refresh Menus", "ij.plugin.ImageJ_Updater(\"menus\")", 0, false);
 		help.addSeparator();
-		Menu aboutMenu = getMenu("Help>About Plugins", true);
 		addPlugInItem(help, "About ImageJ...", "ij.plugin.AboutBox", 0, false);
 				
 		if (applet==null) {
@@ -551,9 +539,7 @@ public class Menus {
 	}
 	
 	void addPluginsMenu() {
-		String value,label,className;
-		int index;
-		//pluginsMenu = new Menu("Plugins");
+		String value;
 		pluginsMenu = getMenu("Plugins");
 		for (int count=1; count<100; count++) {
 			value = Prefs.getString("plug-in" + (count/10)%10 + count%10);
@@ -1518,7 +1504,6 @@ public class Menus {
 		for (Enumeration en=pluginsPrefs.elements(); en.hasMoreElements();) {
 			String cmd = (String)en.nextElement();
 			if (cmd.contains(command)) {
-				boolean ok = pluginsPrefs.removeElement((Object)cmd);
 				found = true;
 				break;
 			}

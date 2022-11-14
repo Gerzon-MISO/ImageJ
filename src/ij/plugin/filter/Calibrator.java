@@ -37,7 +37,7 @@ public class Calibrator implements PlugInFilter, Measurements, ActionListener {
 	private String unit;
 	private double lx=0.02, ly=0.1;
 	private int oldFunction;
-	private String sumResiduals, fitGoodness;
+	private String fitGoodness;
 	private Button open, save;
 	private GenericDialog gd;
 	private static boolean showPlotFlagSaved = true;
@@ -250,14 +250,6 @@ public class Calibrator implements PlugInFilter, Measurements, ActionListener {
 				);
 			return null;
 		}
-		int n = x.length;
-		double xmin=0.0,xmax;
-		if (imp.getType()==ImagePlus.GRAY16)
-			xmax=65535.0; 
-		else
-			xmax=255.0;
-		double[] a = Tools.getMinMax(y);
-		double ymin=a[0], ymax=a[1]; 
 		CurveFitter cf = new CurveFitter(x, y);
 		cf.doFit(fitType, showSettings);
 		if (cf.getStatus() == Minimizer.INITIALIZATION_FAILURE) {

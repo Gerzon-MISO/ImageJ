@@ -1,5 +1,4 @@
 package ij.gui;
-import ij.ImageJ;
 import ij.IJ;
 import ij.Prefs;
 import java.awt.*;
@@ -151,7 +150,6 @@ public class ScrollbarWithLabel extends Panel implements Adjustable, AdjustmentL
 		private final int HEIGHT= (int)(14*SCALE);
 		private BasicStroke stroke = new BasicStroke((float)(2*SCALE));
 		private char type;
-		private Image image;
 		
 		public Icon(char type) {
 			addMouseListener(this);

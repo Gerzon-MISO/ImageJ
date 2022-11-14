@@ -21,7 +21,6 @@ public class FolderOpener implements PlugIn, TextListener {
 	private static String[] excludedTypes = {".txt",".lut",".roi",".pty",".hdr",".java",".ijm",".py",".js",".bsh",".xml",".rar",".h5",".doc",".xls"};
 	private static boolean staticSortFileNames = true;
 	private static boolean staticOpenAsVirtualStack;
-	private boolean convertToGrayscale;  //unused
 	private boolean sortFileNames = true;
 	private boolean sortByMetaData = true;
 	private boolean openAsVirtualStack;
@@ -247,7 +246,6 @@ public class FolderOpener implements PlugIn, TextListener {
 			int count = 0;
 			int counter = 0;
 			ImagePlus imp = null;
-			boolean firstMessage = true;
 			boolean fileInfoStack = false;
 			
 			// open images as stack

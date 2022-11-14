@@ -27,7 +27,6 @@ public class FITS_Writer implements PlugIn {
 	public void run(String path) {
 		ImagePlus imp = IJ.getImage();
 		ImageProcessor ip = imp.getProcessor();
-		int numImages = imp.getImageStackSize();
 		int bitDepth = imp.getBitDepth();
 		if (bitDepth==24) {
 			IJ.error("RGB images are not supported");
@@ -43,8 +42,6 @@ public class FITS_Writer implements PlugIn {
 
 		// GET FILE
 		File f = new File(path);
-		String directory = f.getParent()+File.separator;
-		String name = f.getName();
 		if (f.exists()) f.delete();
 		int numBytes = 0;
         

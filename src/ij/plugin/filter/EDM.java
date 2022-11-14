@@ -1,8 +1,6 @@
 package ij.plugin.filter;
 import ij.*;
-import ij.plugin.*;
 import ij.process.*;
-import ij.gui.*;
 
 /**
  * This plugin implements the Euclidean Distance Map (EDM), Watershed,
@@ -71,7 +69,6 @@ public class EDM implements ExtendedPlugInFilter {
     private ImagePlus imp;              //input
     private ImagePlus outImp;           //output if a new window is desired
     private PlugInFilterRunner pfr;     //needed to extract the stack slice if needed
-    private String command;             //for showing status
     private int outImageType;           //output type; BYTE_OVERWRITE, BYTE, SHORT or FLOAT
     private ImageStack outStack;        //in case output should be a new stack
     private int processType;            //can be EDM, WATERSHED, UEP, VORONOI
@@ -83,7 +80,7 @@ public class EDM implements ExtendedPlugInFilter {
     private boolean background255;      //whether background for EDM is 255, not zero
     private int flags = DOES_8G | PARALLELIZE_STACKS | FINAL_PROCESSING;
     //processType can be:
-    private static final int EDM = 0, WATERSHED = 1, UEP = 2, VORONOI = 3;
+    private static final int WATERSHED = 1, UEP = 2, VORONOI = 3;
     //whether MaximumFinder is needed for processType:
     private static final boolean[] USES_MAX_FINDER = new boolean[] {
             false, true, true, true };
@@ -159,8 +156,6 @@ public class EDM implements ExtendedPlugInFilter {
     /** Called by the PlugInFilterRunner to process the image or one frame of a stack */
     public void run (ImageProcessor ip) {
         if (interrupted) return;
-        int width = ip.getWidth();
-        int height = ip.getHeight();
 
         int backgroundValue = (processType==VORONOI) ?
                 (background255 ? 0 : (byte)255) : //Voronoi needs EDM of the background

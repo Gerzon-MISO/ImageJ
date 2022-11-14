@@ -15,7 +15,6 @@ public class Rotator implements ExtendedPlugInFilter, DialogListener {
 	private static boolean enlarge;
 	private static int gridLines = 1;
 	private ImagePlus imp;
-	private int bitDepth;
 	private boolean canEnlarge;
 	private boolean isEnlarged;
 	private GenericDialog gd;
@@ -28,7 +27,6 @@ public class Rotator implements ExtendedPlugInFilter, DialogListener {
 	public int setup(String arg, ImagePlus imp) {
 		this.imp = imp;
 		if (imp!=null) {
-			bitDepth = imp.getBitDepth();
 			Roi roi = imp.getRoi();
 			if (roi!=null && roi.isLine())
 				roi = null;

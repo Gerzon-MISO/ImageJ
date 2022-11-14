@@ -1,16 +1,8 @@
 package ij.measure;
 import ij.*;
-import ij.gui.*;
-import ij.macro.*;
-import ij.gui.Roi;
-import ij.gui.PolygonRoi;
-import ij.gui.Line;
-import ij.util.Tools;
-import ij.plugin.frame.RoiManager;
 import java.util.Random;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.Hashtable;
 
 /** Minimizer based on Nelder-Mead simplex method (also known as polytope method),
  *  including the 'outside contraction' as described in:
@@ -656,7 +648,6 @@ public class Minimizer {
      *  Called with params containing the initial parameters that have been tried previously */
     private void findValidInitalParams(double[] params, double[] initialParamVariations, Random random) {
         final int maxAttempts = 50*numParams*numParams;  //max number of attempts to find params that do not lead to NaN
-        double rangeFactor = 1;             // will gradually become larger to handle different orders of magnitude
         final double rangeMultiplyLog = Math.log(1e20)/(maxAttempts-1); //will try up to 1e-20 to 1e20*initialParamVariations
         double[] firstParams = new double[numParams]; // remember starting params (which may be modified)
         double[] variations = new double[numParams];    // new values of parameter variations
@@ -769,8 +760,7 @@ public class Minimizer {
         double[] paramVariations = new double[numParams];   // will be the return value
         double[] relatedTo = new double[numParams];         // parameter variation should be related to (in size) these values
         double logTypicalRelativeVariation = 0;
-        for (int i=0; i<numParams; i++) {                   // for all parameters
-            double variation = 0;                           // roughly size of simplex in direction of that parameter
+        for (int i=0; i<numParams; i++) {                   // for all parameters                         // roughly size of simplex in direction of that parameter
             for (int v=0; v<numVertices; v++)
                 if (v != bestVertexNumber) {
                     double delta = Math.abs(simp[v][i] - simp[bestVertexNumber][i]);

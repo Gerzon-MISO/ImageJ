@@ -134,7 +134,6 @@ public class GaussianBlur implements ExtendedPlugInFilter, DialogListener {
         double sigmaY = sigmaScaled ? sigma/imp.getCalibration().pixelHeight : sigma;
         double accuracy = (ip instanceof ByteProcessor || ip instanceof ColorProcessor) ?
             0.002 : 0.0002;
-        Rectangle roi = ip.getRoi();
         blurGaussian(ip, sigmaX, sigmaY, accuracy);
     }
 

@@ -2,21 +2,13 @@ package ij.plugin;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.io.*;
 import java.util.*;
-import java.net.*;
-import java.net.URL;
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
 import ij.*;
 import ij.gui.*;
-import ij.io.*;
-import ij.plugin.*;
-import ij.plugin.filter.*;
-import ij.plugin.frame.PlugInFrame;
 import ij.util.*;
-import ij.text.TextWindow;
 
 /**ControlPanel.
  * This plugin displays a panel with ImageJ commands in a hierarchical tree structure.
@@ -27,19 +19,12 @@ public class ControlPanel implements PlugIn {
 	/** The platform-specific file separator string.*/
 	private static final String fileSeparator=System.getProperty("file.separator");
 
-	/** The platform-specific file separator character. */
-	private static final char sep=fileSeparator.charAt(0);
-
 	private Hashtable panels = new Hashtable();
 	private Vector visiblePanels = new Vector();
 	private Vector expandedNodes = new Vector();
-	private String defaultArg = "";
 
-	private boolean savePropsUponClose=true;
 	private boolean propertiesChanged=true;
-	private boolean closeChildPanelOnExpand = true;
 	private boolean requireDoubleClick;
-	private boolean quitting = true;
 
 	Vector menus = new Vector();
 	Vector allMenus = new Vector();
@@ -49,7 +34,6 @@ public class ControlPanel implements PlugIn {
 	Hashtable treeCommands = new Hashtable();
 	int argLength;
 
-	private String path=null;
 	private DefaultMutableTreeNode root;
 
 	MenuItem reloadMI = null;
@@ -481,7 +465,7 @@ public class ControlPanel implements PlugIn {
 		Arrays.sort(visPanls);
 		for (int i=0; i<visPanls.length; i++) {
 			if (!panels.containsKey(visPanls[i])) {
-				TreePanel p = newPanel(visPanls[i]);
+				newPanel(visPanls[i]);
 			}
 		}
 	}
@@ -522,7 +506,6 @@ public class ControlPanel implements PlugIn {
 	}
 
 	void closeAll(boolean die) {
-		quitting = die;
 		if (!visiblePanels.isEmpty()) {
 			propertiesChanged = true;
 			saveProperties();
@@ -531,8 +514,6 @@ public class ControlPanel implements PlugIn {
 			TreePanel p = (TreePanel)e.nextElement();
 			p.close();
 		}
-		//if(quitting) panels.clear();
-		quitting = true;
 	}
 
 	/* **************************************************************************** */
@@ -654,11 +635,10 @@ class TreePanel implements
 	private JTree pTree;
 	private JMenuBar pMenuBar;
 	private DefaultMutableTreeNode root;
-	private DefaultMutableTreeNode draggingNode=null;
 	private DefaultTreeModel pTreeModel;
 	private ActionListener listener;
 	private JFrame pFrame;
-	private JCheckBoxMenuItem pMenu_saveOnClose, pMenu_noClutter;
+	private JCheckBoxMenuItem pMenu_saveOnClose;
 	private TreePath rootPath;
 
 	// the "up" arrow
@@ -971,14 +951,11 @@ class TreePanel implements
 	}
 
 	public void treeExpanded(TreeExpansionEvent ev) {
-		TreePath evPath = ev.getPath();
-		//DefaultMutableTreeNode node = (DefaultMutableTreeNode)evPath.getLastPathComponent();
 		String evPathString = ev.getPath().toString();
 		evPathString = pcp.pStr2Key(evPathString);
 		evPathString = evPathString.substring(getTitle().length()+1,evPathString.length());
 		String rootPath = getRootPath().toString();
 		rootPath = pcp.pStr2Key(rootPath);
-		//String path = rootPath+"."+evPathString;
 		String path = rootPath+"."+evPathString;
 		if (pcp.hasPanelShowingProperty(path)) {
 			Hashtable panels = pcp.getPanels();
@@ -1022,9 +999,7 @@ class TreePanel implements
 		DefaultMutableTreeNode[] tPath = new DefaultMutableTreeNode[nPath.length-rPath.length+1];
 		for(int i=0; i<tPath.length; i++)
 			tPath[i] = (DefaultMutableTreeNode)nPath[i+rPath.length-1];
-		TreePath path = new TreePath(nPath);
 		TreePath localPath = new TreePath(tPath);
-		String pathString = localPath.toString();
 		TreePanel p = pcp.getPanelForNode(node);
 		if (p==null) {
 			if(pnt!=null)

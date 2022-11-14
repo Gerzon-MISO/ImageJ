@@ -6,7 +6,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
-import java.awt.image.*;
 
 /** This plugin opens GIFs and Animated GIFs. */
 public class GIF_Reader extends ImagePlus implements PlugIn {
@@ -18,7 +17,6 @@ public class GIF_Reader extends ImagePlus implements PlugIn {
 			return;
 		String dir = od.getDirectory();
 		GifDecoder d = new GifDecoder();
-		int status = d.read(dir+name);
 		int n = d.getFrameCount();
 		ImageStack stack = null;
 		if (n==1) {
@@ -30,7 +28,6 @@ public class GIF_Reader extends ImagePlus implements PlugIn {
 				ImageProcessor frame = d.getFrame(i);
 				if (i==0)
 					stack = new ImageStack(frame.getWidth(), frame.getHeight());
-				int t = d.getDelay(i);	// display duration of frame in milliseconds
 				stack.addSlice(null, frame);
 			}
 			if (stack==null)
@@ -90,7 +87,6 @@ class GifDecoder {
 	private int bgIndex;			// background color index
 	private int bgColor;			// background color
 	private int lastBgColor;		// previous bg color
-	private int pixelAspect;		// pixel aspect ratio
 
 	private boolean lctFlag;		// local color table flag
 	private boolean interlace;	// interlace flag
@@ -601,7 +597,6 @@ class GifDecoder {
 		gctSize	   = 2 << (packed & 7);		   // 6-8 : gct size
 
 		bgIndex = read();		 // background color index
-		pixelAspect = read();	 // pixel aspect ratio
 	}
 
 
@@ -638,9 +633,6 @@ class GifDecoder {
 		lastRect = new Rectangle(ix, iy, iw, ih);
 		lastImage = image;
 		lastBgColor = bgColor;
-		int dispose = 0;
-		boolean transparency = false;
-		int delay = 0;
 		lct = null;
 	}
 

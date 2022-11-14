@@ -1,22 +1,18 @@
 package ij.gui;
 
 import java.awt.*;
-import java.util.Properties;
 import java.awt.image.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.plugin.*;
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.RoiManager;
-import ij.plugin.filter.Analyzer;
 import ij.plugin.tool.PlugInTool;
 import ij.macro.*;
 import ij.*;
 import ij.util.*;
-import ij.text.*;
 import java.awt.event.*;
 import java.util.*;
-import java.awt.geom.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -85,7 +81,6 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	private boolean scaleToFit;
 	private boolean painted;
 	private boolean hideZoomIndicator;
-	private boolean flattening;
 	private Timer pressTimer;
 	private PopupMenu roiPopupMenu;
 	private static int longClickDelay = 1000; //ms
@@ -299,7 +294,6 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 	private void drawOverlay(Overlay overlay, Graphics g) {
 		if (imp!=null && imp.getHideOverlay() && overlay!=showAllOverlay)
 			return;
-		flattening = imp!=null && ImagePlus.flattenTitle.equals(imp.getTitle());
 		if (imp!=null && showAllOverlay!=null && overlay!=showAllOverlay)
 			overlay.drawLabels(false);
 		Color labelColor = overlay.getLabelColor();
@@ -330,7 +324,6 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 			if (mag!=1.0)
 				font = font.deriveFont((float)(font.getSize()*mag));
 		}
-		Roi activeRoi = imp.getRoi();
 		boolean roiManagerShowAllMode = overlay==showAllOverlay && !Prefs.showAllSliceOnly;
 		for (int i=0; i<n; i++) {
 			if (overlay==null) break;
@@ -930,7 +923,6 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 		double newMag = getLowerZoomLevel(magnification);
 		double srcRatio = (double)srcRect.width/srcRect.height;
 		double imageRatio = (double)imageWidth/imageHeight;
-		double initialMag = imp.getWindow().getInitialMagnification();
 		if (Math.abs(srcRatio-imageRatio)>0.05) {
 			double scale = oldMag/newMag;
 			int newSrcWidth = (int)Math.round(srcRect.width*scale);

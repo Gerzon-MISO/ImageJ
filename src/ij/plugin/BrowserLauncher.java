@@ -1,14 +1,6 @@
 package ij.plugin;
 import ij.IJ;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 /**
  * This plugin implements the File/Import/URL command and the commands in the Help menu that 
@@ -49,10 +41,6 @@ import java.net.URLClassLoader;
  * @version 1.4b1 (Released June 20, 2001)
  */
 public class BrowserLauncher implements PlugIn {
-	/** The com.apple.mrj.MRJFileUtils class */
-	private static Class mrjFileUtilsClass;
-	/** The openURL method of com.apple.mrj.MRJFileUtils */
-	private static Method openURL;
 	private static boolean error;
 
 
@@ -85,7 +73,6 @@ public class BrowserLauncher implements PlugIn {
 	 * @throws IOException If the web browser could not be located or does not run
 	 */
 	public static void openURL(String url) throws IOException {
-		String errorMessage = "";
 		if (IJ.isMacOSX())
 			IJ.runMacro("exec('open', getArgument())",url);
 		else if (IJ.isWindows()) {

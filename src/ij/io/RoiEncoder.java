@@ -3,9 +3,6 @@ import ij.gui.*;
 import ij.process.FloatPolygon;
 import java.awt.*;
 import java.io.*;
-import java.util.*;
-import java.net.*;
-import java.awt.geom.*;
 
 
 /** Saves an ROI to a file or stream. RoiDecoder.java has a description of the file format.
@@ -18,7 +15,7 @@ public class RoiEncoder {
 	static final int VERSION = 228; // v1.52t (roi groups, scale stroke width)
 	private String path;
 	private OutputStream f;
-	private final int polygon=0, rect=1, oval=2, line=3, freeline=4, polyline=5, noRoi=6, freehand=7, 
+	private final int polygon=0, rect=1, oval=2, line=3, freeline=4, polyline=5, freehand=7, 
 		traced=8, angle=9, point=10;
 	private byte[] data;
 	private String roiName;

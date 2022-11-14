@@ -3,7 +3,6 @@ import ij.util.Tools;
 import ij.IJ;
 import java.io.*;
 import java.util.*;
-import java.net.*;
 
 /**
 Decodes single and multi-image TIFF files. The LZW decompression
@@ -140,17 +139,14 @@ public class TiffDecoder {
 			in.close();
 			return -1;
 		}
-		int magicNumber = getShort(); // 42
 		long offset = ((long)getInt())&0xffffffffL;
 		return offset;
 	}
 		
 	int getValue(int fieldType, int count) throws IOException {
 		int value = 0;
-		int unused;
 		if (fieldType==SHORT && count==1) {
 			value = getShort();
-			unused = getShort();
 		} else
 			value = getInt();
 		return value;
@@ -258,7 +254,6 @@ public class TiffDecoder {
 		// density calibration
 		in.seek(offset+182);
 		int fitType = in.read();
-		int unused = in.read();
 		int nCoefficients = in.readShort();
 		if (fitType==11) {
 			fi.calibrationFunction = 21; //Calibration.UNCALIBRATED_OD
@@ -294,7 +289,6 @@ public class TiffDecoder {
 		if (nImages>=2 && (fi.fileType==FileInfo.GRAY8||fi.fileType==FileInfo.COLOR8)) {
 			fi.nImages = nImages;
 			fi.pixelDepth = in.readFloat();	//SliceSpacing
-			int skip = in.readShort();		//CurrentSlice
 			fi.frameInterval = in.readFloat();
 		}
 			
@@ -598,10 +592,8 @@ public class TiffDecoder {
 	void getMetaData(int loc, FileInfo fi) throws IOException {
 		if (metaDataCounts==null || metaDataCounts.length==0)
 			return;
-		int maxTypes = 10;
 		long saveLoc = in.getLongFilePointer();
 		in.seek(loc);
-		int n = metaDataCounts.length;
 		int hdrSize = metaDataCounts[0];
 		if (hdrSize<12 || hdrSize>804) {
 			in.seek(saveLoc);

@@ -2,7 +2,6 @@ package ij.gui;
 import ij.*;
 import ij.plugin.frame.Recorder;
 import ij.plugin.ScreenGrabber;
-import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import ij.util.Tools;
 import ij.macro.*;
@@ -56,7 +55,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 	private int nfIndex, sfIndex, cbIndex, choiceIndex, textAreaIndex, radioButtonIndex;
 	private GridBagConstraints c;
 	private boolean firstNumericField=true;
-	private boolean firstSlider=true;
 	private boolean invalidNumber;
 	private String errorMessage;
 	private Hashtable labels;
@@ -82,7 +80,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 	protected static GenericDialog instance;
 	private boolean firstPaint = true;
 	private boolean fontSizeSet;
-	private boolean showDialogCalled;
 	private boolean optionsRecorded;	 // have dialogListeners been called to record options?
 	private Label lastLabelAdded;
 	private int[] windowIDs;
@@ -270,7 +267,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 			label2 = label2.replace('_', ' ');
 		Label fieldLabel = makeLabel(label2);
 		this.lastLabelAdded = fieldLabel;
-		boolean custom = customInsets;
 		if (addToSameRow) {
 			c.gridx = GridBagConstraints.RELATIVE;
 			addToSameRow = false;
@@ -568,7 +564,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		Panel panel = new Panel();
 		int nRows = headings!=null?rows+1:rows;
 		panel.setLayout(new GridLayout(nRows, columns, 6, 0));
-		int startCBIndex = cbIndex;
 		if (checkbox==null)
 			checkbox = new Vector(12);
 		if (headings!=null) {
@@ -931,7 +926,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		defaultValues.addElement(Double.valueOf(defaultValue/scale));
 		defaultText.addElement(tf.getText());
 		tf.setEditable(true);
-		firstSlider = false;
 
 		Panel panel = new Panel();
 		GridBagLayout pgrid = new GridBagLayout();
@@ -1424,7 +1418,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 
 	/** Displays this dialog box. */
 	public void showDialog() {
-		showDialogCalled = true;
 		if (macro) {
 			dispose();
 			recorderOn = Recorder.record && Recorder.recordInMacros;

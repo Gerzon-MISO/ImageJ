@@ -280,8 +280,6 @@ class DicomDecoder {
 	private int vr;  // Value Representation
 	private static final int IMPLICIT_VR = 0x2D2D; // '--' 
 	private byte[] vrLetters = new byte[2];
- 	private int previousGroup;
- 	private String previousInfo;
  	private StringBuffer dicomInfo = new StringBuffer(1000);
  	private boolean dicmFound; // "DICM" found at offset 128
  	private boolean oddLocations;  // one or more tags at odd locations
@@ -439,7 +437,6 @@ class DicomDecoder {
   
 	byte[] getLut(int length) throws IOException {
 		if ((length&1)!=0) { // odd
-			String dummy = getString(length);
 			return null;
 		}
 		length /= 2;
@@ -520,7 +517,6 @@ class DicomDecoder {
 	}
   
 	FileInfo getFileInfo() throws IOException {
-		long skipCount;
 		FileInfo fi = new FileInfo();
 		int bitsAllocated = 16;
 		fi.fileFormat = fi.RAW;
@@ -769,11 +765,6 @@ class DicomDecoder {
 		String info = getHeaderInfo(tag, value);
 		if (inSequence && info!=null && vr!=SQ) info = ">" + info;
 		if (info!=null &&  tag!=ITEM) {
-			int group = tag>>>16;
-			//if (group!=previousGroup && (previousInfo!=null&&previousInfo.indexOf("Sequence:")==-1))
-			//	dicomInfo.append("\n");
-			previousGroup = group;
-			previousInfo = info;
 			dicomInfo.append(tag2hex(tag)+info+"\n");
 		}
 		if (IJ.debugMode) {

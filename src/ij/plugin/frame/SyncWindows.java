@@ -229,7 +229,6 @@ public class SyncWindows extends PlugInFrame implements
 		ImageWindow iw;
 		ImageCanvas ic;
 		Point p;
-		Point oldp;
 		oldX = x; oldY = y;
 		x = e.getX();
 		y = e.getY();
@@ -252,7 +251,6 @@ public class SyncWindows extends PlugInFrame implements
 				ic = iw.getCanvas();
 				if (cCoords.getState() && iw != iwc) {
 					p = getMatchingCoords(ic, icc, x, y);
-					oldp = getMatchingCoords(ic, icc, oldX, oldY);
 				} else {
 					p.x = x;
 					p.y = y;
@@ -282,7 +280,6 @@ public class SyncWindows extends PlugInFrame implements
 		ImageWindow iw;
 		ImageCanvas ic;
 		Point p;
-		Point oldp;
 
 		oldX = x; oldY = y;
 		x = e.getX();
@@ -308,7 +305,6 @@ public class SyncWindows extends PlugInFrame implements
 
 				if (cCoords.getState() && iw != iwc) {
 					p = getMatchingCoords(ic, icc, x, y);
-					oldp = getMatchingCoords(ic, icc, oldX, oldY);
 				} else {
 					p = new Point(x, y);
 				}
@@ -623,9 +619,6 @@ public class SyncWindows extends PlugInFrame implements
 	// --------------------------------------------------
 	/** Builds list of open ImageWindows */
 	protected Component buildWindowList() {
-		ImagePlus img;
-		ImageWindow iw;
-
 		// get IDList from WindowManager
 		int[] imageIDs = WindowManager.getIDList();
 

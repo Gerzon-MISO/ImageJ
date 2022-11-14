@@ -2,7 +2,6 @@ package ij.macro;
 import ij.*;
 import ij.process.*;
 import ij.gui.*;
-import ij.plugin.Macro_Runner;
 import ij.plugin.frame.*;
 import ij.util.Tools;
 import ij.text.*;
@@ -10,7 +9,6 @@ import ij.measure.ResultsTable;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.KeyEvent;
-import java.io.PrintWriter;
 
 
 /** This is the recursive descent parser/interpreter for the ImageJ macro language. */
@@ -610,7 +608,7 @@ public class Interpreter implements MacroConstants {
 		if (token!=';')
 			error("';' expected");
 		int condPC = pc;
-		int incPC2, startPC=0;
+		int startPC=0;
 		double cond = 1;
 		while (true) {
 			if (pgm.code[pc+1]!=';')
@@ -875,8 +873,6 @@ public class Interpreter implements MacroConstants {
 		if (tok==USER_FUNCTION)
 			return USER_FUNCTION;
 		if (tok==VARIABLE_FUNCTION) {
-			int address = rightSideToken>>TOK_SHIFT;
-			int type = pgm.table[address].type;
 			if (isString(pc+2))
 				return Variable.STRING;
 			int token2 = pgm.code[pc+4];
@@ -969,7 +965,6 @@ public class Interpreter implements MacroConstants {
 		int size = v.getArraySize();
 		if (index+1>size)
 			v.setArraySize(index+1);
-		int next = nextToken();
 		switch (expressionType) {
 			case Variable.STRING:
 				array[index].setString(getString());

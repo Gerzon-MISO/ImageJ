@@ -3,10 +3,7 @@ import ij.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.plugin.frame.*;
-import ij.util.Tools;
-import ij.util.FloatArray;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.geom.*;
 import java.awt.event.*;
 
@@ -949,7 +946,6 @@ public class PolygonRoi extends Roi {
 		if (ySpline==null || ySpline.length!=evaluationPoints)
 			ySpline = new float[evaluationPoints];
 		int nNodes = isLine() ? nPoints : nPoints+1;
-		double length = getUncalibratedLength();
 		float[] nodePositions = new float[nNodes];
 		float lastNodePosition = 0f;		//independent coordinate for x & y-splines,
 		nodePositions[0] = 0f;				//incremented by the sqrt of the distance between points
@@ -1095,8 +1091,6 @@ public class PolygonRoi extends Roi {
 		else
 			samePoint = (xp[nPoints-2]==xp[nPoints-1] && yp[nPoints-2]==yp[nPoints-1]);
 		boolean doubleClick = (System.currentTimeMillis()-mouseUpTime)<=300;
-		int size = boxSize+2;
-		int size2 = boxSize/2 +1;
 		Rectangle biggerStartBox = new Rectangle(screenXD(startXD)-5, screenYD(startYD)-5, 10, 10);
 		if (nPoints>2 && (biggerStartBox.contains(sx, sy)
 		|| (offScreenXD(sx)==startXD && offScreenYD(sy)==startYD)

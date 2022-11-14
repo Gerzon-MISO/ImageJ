@@ -1,16 +1,12 @@
 package ij.plugin;
 import ij.*;
-import static ij.IJ.createImage;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-import java.io.*;
-import java.awt.datatransfer.*;
 import ij.gui.*;
 import ij.process.*;
 import ij.measure.Measurements;
 import ij.plugin.filter.Analyzer;
-import ij.text.TextWindow;
 import ij.measure.*;
 
 /** This plugin implements the Analyze/Tools/Calibration Bar command.
@@ -327,8 +323,6 @@ public class CalibrationBar implements PlugIn {
 		Color c = getColor(textColor);
 		if (c == null)
 			return 0;
-		double hmin = cal.getCValue(stats.histMin);
-		double hmax = cal.getCValue(stats.histMax);
 		double barStep = (double)(BAR_LENGTH*zoom) ;
 		if (numLabels > 2)
 			barStep /= (numLabels - 1);
@@ -345,7 +339,6 @@ public class CalibrationBar implements PlugIn {
 		fontHeight = metrics.getHeight();
 
 		for (int i = 0; i < numLabels; i++) {
-			double yLabelD = (int)(YMARGIN*zoom + BAR_LENGTH*zoom - i*barStep - 1);
 			int yLabel = (int)(Math.round( y + BAR_LENGTH*zoom - i*barStep - 1));
 			Calibration cal = imp.getCalibration();
 			String s = "";

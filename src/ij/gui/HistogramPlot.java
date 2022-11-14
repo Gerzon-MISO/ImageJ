@@ -94,7 +94,6 @@ public class HistogramPlot extends ImagePlus {
 		this.stats = stats;
 		this.yMax = stats.histYMax;
 		cal = imp.getCalibration();
-		boolean limitToThreshold = (Analyzer.getMeasurements()&LIMIT)!=0;
 		imp.getMask();
 		histogram = stats.getHistogram();
 		lut = imp.createLut();
@@ -103,7 +102,6 @@ public class HistogramPlot extends ImagePlus {
 		ip.setColor(Color.white);
 		ip.resetRoi();
 		ip.fill();
-		ImageProcessor srcIP = imp.getProcessor();
 		drawHistogram(imp, ip, fixedRange, stats.histMin, stats.histMax);
 	}
 	
@@ -115,7 +113,6 @@ public class HistogramPlot extends ImagePlus {
 		setTitle("Histogram of "+imp.getShortTitle());
 		int x, y;
 		long maxCount2 = 0;
-		int mode2 = 0;
 		long saveModalCount;		    	
 		ip.setColor(Color.black);
 		ip.setLineWidth(1);
@@ -125,7 +122,6 @@ public class HistogramPlot extends ImagePlus {
 		for (int i = 0; i<histogram.length; i++) {
  			if ((histogram[i] > maxCount2) && (i != stats.mode)) {
 				maxCount2 = histogram[i];
-				mode2 = i;
   			}
   		}
 		newMaxCount = histogram[stats.mode];

@@ -33,22 +33,15 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	private static final int BUTTONS = 11;
 	private static final int DRAW=0, FILL=1, LABEL=2;
 	private static final int SHOW_ALL=0, SHOW_NONE=1, LABELS=2, NO_LABELS=3;
-	private static final int MENU=0, COMMAND=1;
 	private static final int IGNORE_POSITION=-999;  // ignore the ROI's built in position
 	private static final int CHANNEL=0, SLICE=1, FRAME=2, SHOW_DIALOG=3;
-	private static int rows = 15;
-	private static int lastNonShiftClick = -1;
-	private static boolean allowMultipleSelections = true;
 	private static String moreButtonLabel = "More "+'\u00bb';
 	private Panel panel;
 	private static Frame instance;
-	private static int colorIndex = 4;
 	private JList list;
 	private DefaultListModel listModel;
 	private ArrayList rois = new ArrayList();
-	private boolean canceled;
 	private boolean macro;
-	private boolean ignoreInterrupts;
 	private PopupMenu pm;
 	private Button moreButton, colorButton;
 	private Checkbox showAllCheckbox = new Checkbox("Show All", false);
@@ -586,11 +579,10 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 			String msg = "Delete all items on the list?";
 			if (replacing)
 				msg = "Replace items on the list?";
-			canceled = false;
 			if (!IJ.isMacro() && !macro) {
 				YesNoCancelDialog d = new YesNoCancelDialog(this, "ROI Manager", msg);
 				if (d.cancelPressed())
-					{canceled = true; return false;}
+					return false;
 				if (!d.yesPressed()) return false;
 			}
 			index = getAllIndexes();
@@ -614,9 +606,6 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 				}
 			}
 		}
-		ImagePlus imp = WindowManager.getCurrentImage();
-		//if (count>1 && index.length==1 && imp!=null)
-		//	imp.deleteRoi();
 		updateShowAll();
 		if (record())
 			Recorder.record("roiManager", "Delete");
@@ -2046,8 +2035,6 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		if (e.getID()==WindowEvent.WINDOW_CLOSING) {
 			instance = null;
 		}
-		if (!IJ.isMacro())
-			ignoreInterrupts = false;
 	}
 
 	/** Returns a reference to the ROI Manager if it
@@ -2283,7 +2270,6 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 			showAll(NO_LABELS);
 			if (Interpreter.isBatchMode()) IJ.wait(250);
 		} else if (cmd.equals("deselect")||cmd.indexOf("all")!=-1) {
-			if (IJ.isMacOSX()) ignoreInterrupts = true;
 			deselect();
 			IJ.wait(50);
 		} else if (cmd.equals("reset")) {
@@ -2292,8 +2278,6 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 			//IJ.log("Debug: "+debugCount);
 			//for (int i=0; i<debugCount; i++)
 			//	IJ.log(debug[i]);
-		} else if (cmd.equals("enable interrupts")) {
-			ignoreInterrupts = false;
 		} else if (cmd.equals("remove channel info")) {
 			removePositions(CHANNEL);
 		} else if (cmd.equals("remove slice info")) {
@@ -2383,8 +2367,6 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 
 	/** Clears this RoiManager so that it contains no ROIs. */
 	public void reset() {
-		if (IJ.isMacOSX() && IJ.isMacro())
-			ignoreInterrupts = true;
 		if (listModel!=null)
 			listModel.removeAllElements();
 		overlayTemplate = null;
@@ -2571,8 +2553,6 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		boolean mm = list.getSelectionMode() == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		if (mm)
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		int delay = 1;
-		long start = System.currentTimeMillis();
 		while (true) {
 			if (list.isSelectedIndex(index))
 				break;

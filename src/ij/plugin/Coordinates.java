@@ -137,7 +137,6 @@ public class Coordinates implements PlugIn, DialogListener {
 			if (zUnitChanged)
 				cal.setZUnit(zUnit2);
 		}
-		ImageWindow win = imp.getWindow();
 		imp.repaintWindow();
 		if (Recorder.record) {
 			if (Recorder.scriptMode()) {

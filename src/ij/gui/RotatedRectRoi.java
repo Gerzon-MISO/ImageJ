@@ -1,6 +1,5 @@
 package ij.gui;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
 import ij.*;
 import ij.plugin.frame.Recorder;
@@ -38,7 +37,6 @@ public class RotatedRectRoi extends PolygonRoi {
 	public void draw(Graphics g) {	
 		super.draw(g);
 		if (!overlay && ic!=null) {
-			double mag = ic.getMagnification();
 			for (int i=0; i<4; i++) {
 			if (i==3) //mark starting point
 				handleColor = strokeColor!=null?strokeColor:ROIColor;
@@ -79,7 +77,6 @@ public class RotatedRectRoi extends PolygonRoi {
 	}
 		
 	void makeRectangle(double x1, double y1, double x2, double y2) {
-		double length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 		double angle = Math.atan ((x2-x1)/(y2-y1));
 		double wsa = (rectWidth/2.0)*Math.sin((Math.PI/2.0)+angle);
 		double wca = (rectWidth/2.0)*Math.cos((Math.PI/2)+angle);

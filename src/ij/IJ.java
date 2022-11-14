@@ -19,11 +19,7 @@ import java.util.*;
 import java.awt.*;	
 import java.applet.Applet;
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
-import javax.net.ssl.*;
-import java.security.cert.*;
-import java.security.KeyStore;
 import java.nio.ByteBuffer;
 import java.math.RoundingMode;
 
@@ -56,7 +52,7 @@ public class IJ {
 	private static ProgressBar progressBar;
 	private static TextPanel textPanel;
 	private static String osname, osarch;
-	private static boolean isMac, isWin, isLinux, is64Bit;
+	private static boolean isMac, isWin, isLinux;
 	private static int javaVersion;
 	private static boolean controlDown, altDown, spaceDown, shiftDown;
 	private static boolean macroRunning;
@@ -74,7 +70,6 @@ public class IJ {
 	private static Properties properties;	private static DecimalFormat[] df;
 	private static DecimalFormat[] sf;
 	private static DecimalFormatSymbols dfs;
-	private static boolean trustManagerCreated;
 	private static String smoothMacro;
 	private static Interpreter macroInterpreter;
 	private static boolean protectStatusBar;
@@ -507,7 +502,6 @@ public class IJ {
 		int delay = (int)Tools.parseDouble(options, defaultDelay);
 		if (delay>8000)
 			delay = 8000;
-		String colorString = null;
 		ImageJ ij = IJ.getInstance();
 		if (flashImage) {
 			Color previousColor = imp.getWindow().getBackground();
@@ -994,8 +988,6 @@ public class IJ {
 			return ""+n;
 		if (n==Float.MAX_VALUE) // divide by 0 in FloatProcessor
 			return "3.4e38";
-		double np = n;
-		if (n<0.0) np = -n;
 		if (decimalPlaces<0) synchronized(IJ.class) {
 			decimalPlaces = -decimalPlaces;
 			if (decimalPlaces>9) decimalPlaces=9;
@@ -1100,8 +1092,6 @@ public class IJ {
 				break;
 			case KeyEvent.VK_SPACE: {
 				spaceDown=true;
-				ImageWindow win = WindowManager.getCurrentWindow();
-				//if (win!=null) win.getCanvas().setCursor(-1,-1,-1, -1);
 				break;
 			}
 			case KeyEvent.VK_ESCAPE: {
@@ -1119,8 +1109,6 @@ public class IJ {
 			case KeyEvent.VK_SHIFT: shiftDown=false; if (debugMode) beep(); break;
 			case KeyEvent.VK_SPACE:
 				spaceDown=false;
-				ImageWindow win = WindowManager.getCurrentWindow();
-				//if (win!=null) win.getCanvas().setCursor(-1,-1,-1,-1);
 				break;
 			case ALL_KEYS:
 				shiftDown=controlDown=altDown=spaceDown=false;

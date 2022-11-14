@@ -1,6 +1,5 @@
 package ij.gui;
 import ij.*;
-import ij.process.*;
 import ij.measure.CurveFitter;
 import ij.measure.Minimizer;
 import ij.text.TextWindow;
@@ -9,8 +8,6 @@ import ij.plugin.Colors;
 import ij.plugin.frame.Recorder;
 import ij.util.Tools;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Arrays;
 import java.util.Vector;
 import java.util.ArrayList;
 
@@ -37,7 +34,7 @@ public class PlotContentsDialog implements DialogListener {
 	private String[]      allPlotNames;
 	private static Plot   previousPlot;
 	private static int    previousPlotObjectIndex;
-	private int           defaultPlotIndex, defaultObjectIndex;
+	private int           defaultPlotIndex;
 	private int           currentPlotNumObjects;
 	private Choice        tableChoice;               // for "Add from Table"
 	final static int      N_COLUMNS = 4;             // number of data columns that we can have; x, y, xE, yE
@@ -50,7 +47,6 @@ public class PlotContentsDialog implements DialogListener {
 	private static String previousTableName;
 	private static int[]  previousColumns = new int[]{1, 1, 0, 0}; //must be N_COLUMNS elements
 	private static int    defaultTableIndex;
-	private static int[]  defaultColumnIndex = new int[N_COLUMNS];
 	private String[]      arrayHeadings;             // for "Add from Arrays"
 	private ArrayList<float[]> arrayData;
 	private Choice        fitDataChoice;             // for "Add Fit"

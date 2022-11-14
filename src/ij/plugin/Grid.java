@@ -14,7 +14,7 @@ public class Grid implements PlugIn, DialogListener {
 	private static final String GRID = "|GRID|";
 	private static double crossSize = 0.1;
 	private static String[] colors = {"Red","Green","Blue","Magenta","Cyan","Yellow","Orange","Black","White"};
-	private final static int LINES=0, HLINES=1, CROSSES=2, POINTS=3, CIRCLES=4, NONE=4;
+	private final static int LINES=0, HLINES=1, CROSSES=2, POINTS=3, CIRCLES=4;
 	private static String[] types = {"Lines","Horizontal Lines", "Crosses", "Points", "Circles", "None"};
 	private Random random = new Random(System.currentTimeMillis());
 	private ImagePlus imp;
@@ -33,7 +33,7 @@ public class Grid implements PlugIn, DialogListener {
 	private boolean bold;
 	private boolean randomOffset;
 	private boolean centered;
-	private Checkbox centerCheckbox, randomCheckbox;
+	private Checkbox centerCheckbox;
 
 	public void run(String arg) {
 		imp = IJ.getImage();
@@ -104,7 +104,6 @@ public class Grid implements PlugIn, DialogListener {
 	private void drawHorizontalLines() {
 		GeneralPath path = new GeneralPath();
 		int width = imp.getWidth();
-		int height = imp.getHeight();
 		for(int i=0; i<linesH; i++) {
 			float yoff = (float)(ystart+i*tileHeight);
 			path.moveTo(0f, yoff);
@@ -177,7 +176,6 @@ public class Grid implements PlugIn, DialogListener {
 		if (!isMacro) {
 			Vector v = gd.getCheckboxes();
 			centerCheckbox = (Checkbox)v.elementAt(1);
-			randomCheckbox = (Checkbox)v.elementAt(2);
 		}
 		dialogItemChanged(gd, null);
 		gd.showDialog();

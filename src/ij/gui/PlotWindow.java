@@ -8,9 +8,6 @@ import java.util.*;
 import ij.*;
 import ij.process.*;
 import ij.util.*;
-import ij.text.TextWindow;
-import ij.plugin.filter.Analyzer;
-import ij.plugin.filter.PlugInFilterRunner;
 import ij.measure.*;
 import ij.io.SaveDialog;
 
@@ -66,10 +63,7 @@ public class PlotWindow extends ImageWindow implements ActionListener, ItemListe
 	private static final String OPTIONS = "pp.options";
 	private static final int SAVE_X_VALUES = 1;
 	private static final int AUTO_CLOSE = 2;
-	private static final int LIST_VALUES = 4;
 	private static final int INTERPOLATE = 8;
-	private static final int NO_GRID_LINES = 16;
-	private static final int NO_TICKS = 32;
 	private static String moreButtonLabel = "More "+'\u00bb';
 	private static String dataButtonLabel = "Data "+'\u00bb';
 
@@ -81,10 +75,7 @@ public class PlotWindow extends ImageWindow implements ActionListener, ItemListe
 	private MenuItem[] menuItems = new MenuItem[NUM_MENU_ITEMS];
 	private Label statusLabel;
 	private String userStatusText;
-	private static String defaultDirectory = null;
 	private static int options;
-	private int defaultDigits = -1;
-	private int markSize = 5;
 	private static Plot staticPlot;
 	private Plot plot;
 
@@ -776,8 +767,6 @@ public class PlotWindow extends ImageWindow implements ActionListener, ItemListe
 
 	/** Called once when ImageJ quits. */
 	public static void savePreferences(Properties prefs) {
-		double min = ProfilePlot.getFixedMin();
-		double max = ProfilePlot.getFixedMax();
 		prefs.put(PREFS_WIDTH, Integer.toString(plotWidth));
 		prefs.put(PREFS_HEIGHT, Integer.toString(plotHeight));
 		prefs.put(PREFS_FONT_SIZE, Integer.toString(defaultFontSize));

@@ -4,7 +4,6 @@ import ij.gui.*;
 import ij.macro.*;
 import ij.util.Tools;
 import ij.util.IJMath;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.awt.Color;
 
@@ -837,7 +836,6 @@ public class CurveFitter implements UserFunction{
 	 *	The final element is the value of the factorParam (if any).
 	 */
 	private void minimizerParamsToFullParams(double[] params, boolean forRegression) {
-		boolean shouldTransformToSmallerParams = false;
 		double offset = 0;
 		double factor = hasSlopeParam ? 0 : 1; //for regression, calculate function value without x*slope, but multiplied with 1
 		double sumResidualsSqr = 0;
@@ -890,8 +888,6 @@ public class CurveFitter implements UserFunction{
 				sumY2 += y*y*w;
 				sumY += y*w;
 			} else {					// fit y = offset + factor * function(of other params)
-				double x = fValue;
-				double y = yData[i];
 				sumX += fValue*w;
 				sumX2 += fValue*fValue*w;
 				sumXY += fValue*yData[i]*w;
@@ -1020,7 +1016,6 @@ public class CurveFitter implements UserFunction{
 
 		double slope = (lasty - firsty)/(lastx - firstx);
 		if (Double.isNaN(slope) || Double.isInfinite(slope)) slope = 0;
-		double yIntercept = yMean - slope * xMean;
 
 		//We cannot fit the following cases because we would always get NaN function values
 		if (xMin < 0 && (fitType==POWER||fitType==CHAPMAN)) {

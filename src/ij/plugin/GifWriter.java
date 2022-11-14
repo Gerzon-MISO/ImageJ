@@ -3,9 +3,7 @@ import ij.*;
 import ij.io.*;
 import ij.gui.*;
 import ij.process.*;
-import ij.plugin.*;
 import java.io.*;
-import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 
@@ -282,8 +280,6 @@ class AnimatedGifEncoder2 {
 		 }
 	  
 		int type = image.getType();
-		// If  indexed byte image then format does not need changing	  
-		int k;
 		if ((type == 0) ||( type == 3)) //8 bit images
 			Process8bitCLT(image);
 		else if (type==4)	{ //4 for RGB		   
@@ -338,17 +334,7 @@ class AnimatedGifEncoder2 {
 String name;
 
 public boolean setoptions() {
-	String[] GCTtype = {"Do not use","Load from Current Image", "Load from another Image RGB or 8 Bit",
-	 "Use another RGB to create a new color table " };
-	String[] DisposalType = { "No Disposal","Do not Dispose", "Restore to Background", "Restore to previous" };
-	String[] TransparencyType ={"No Transparency", "Automatically Set if Available (8 bit only)", "Set to Index",
-				"Set to index with specified color", "Set to the index that is closest to specified color"};
-		int setdelay=delay*10;
-	int gctType=0;
 	int setTrans;
-	if (GCTloadedExternal) gctType = 2;
-	if (GCTextracted&&GCTloadedExternal) gctType =3;
-	if (gctused&&!(GCTextracted||GCTloadedExternal))gctType=1;
 	setTrans=1;
 	if (!(autotransparent||GCTsetTransparent||GCToverideIndex||GCToverideColor)) setTrans=0;
 	if (GCTsetTransparent&& !(GCToverideIndex||GCToverideColor)) setTrans = 2;
@@ -1617,7 +1603,7 @@ class NeuQuant {
 
    public void unbiasnet() {
 
-	  int i, j;
+	  int i;
 
 	  for (i = 0; i < netsize; i++) {
 		 network[i][0] >>= netbiasshift;

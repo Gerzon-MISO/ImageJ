@@ -5,10 +5,8 @@ import ij.measure.*;
 import ij.plugin.*;
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.RoiManager;
-import ij.plugin.filter.Analyzer;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.macro.Interpreter;
-import ij.io.RoiDecoder;
 import java.awt.*;
 import java.util.*;
 import java.io.*;
@@ -117,7 +115,6 @@ public class Roi extends Object implements Cloneable, java.io.Serializable, Iter
 	private boolean hyperstackPosition;
 	private Overlay prototypeOverlay;
 	private boolean subPixel;
-	private boolean activeOverlayRoi;
 	private Properties props;
 	private boolean isCursor;
 	private double xcenter = Double.NaN;
@@ -931,7 +928,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable, Iter
 		int oy = ic.offScreenY2(sy);
 		if (ox<0) ox=0; if (oy<0) oy=0;
 		if (ox>xMax) ox=xMax; if (oy>yMax) oy=yMax;
-		int x1=x, y1=y, x2=x1+width, y2=y+height, xc=x+width/2, yc=y+height/2;
+		int x1=x, x2=x1+width, y2=y+height, xc=x+width/2, yc=y+height/2;
 		if (width > 7 && height > 7) {
 			asp = (double)width/(double)height;
 			asp_bk = asp;
@@ -1530,7 +1527,6 @@ public class Roi extends Object implements Cloneable, java.io.Serializable, Iter
 		inside or near a handle, otherwise returns -1. */
 	public int isHandle(int sx, int sy) {
 		if (clipboard!=null || ic==null) return -1;
-		double mag = ic.getMagnification();
 		int margin = IJ.getScreenSize().width>1280?5:3;
 		int size = getHandleSize()+margin;
 		int halfSize = size/2;
@@ -1579,7 +1575,6 @@ public class Roi extends Object implements Cloneable, java.io.Serializable, Iter
 		if (imp==null) return;
 		imp.draw(clipX-5, clipY-5, clipWidth+10, clipHeight+10);
 		if (Recorder.record) {
-			String method;
 			if (type==OVAL)
 				Recorder.record("makeOval", x, y, width, height);
 			else if (!(this instanceof TextRoi)) {
@@ -1744,7 +1739,6 @@ public class Roi extends Object implements Cloneable, java.io.Serializable, Iter
 			clipboard = null;
 			Undo.setup(Undo.FILTER, imp);
 		}
-		activeOverlayRoi = false;
 	}
 
 	public void abortPaste() {

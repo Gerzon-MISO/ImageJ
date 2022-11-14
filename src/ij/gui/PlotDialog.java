@@ -1,6 +1,5 @@
 package ij.gui;
 import ij.*;
-import ij.process.*;
 import ij.plugin.frame.Recorder;
 import java.awt.*;
 import java.util.Vector;
@@ -42,7 +41,6 @@ public class PlotDialog implements DialogListener {
 	private static boolean transparentBackground;
 	//saved dialog options: Axis labels
 	private static String lastXLabel, lastYLabel;
-	private static float plotFontSize;
 	//saved dialog options: High-resolution plot
 	private static float hiResFactor = 4.0f;
 	private static boolean hiResAntiAliased = true;
@@ -158,7 +156,6 @@ public class PlotDialog implements DialogListener {
 			String[] headings = dialogType == AXIS_OPTIONS ? new String[]{"X Axis", "Y Axis"} : null;
 			int i=0;
 			for (int l=0; l<xFlags.length; l++) {
-				String label = labels[l];
 				boolean xFlag = getFlag(flags, xFlags[l]);
 				boolean yFlag = getFlag(flags, xFlags[l]<<1); //y flags are shifted up one bit
 				if (dialogType == AXIS_OPTIONS || dialogType == X_AXIS) {
@@ -353,8 +350,6 @@ public class PlotDialog implements DialogListener {
 
 		if (dialogType == AXIS_OPTIONS || dialogType == X_AXIS || dialogType == Y_AXIS) {
 			final int[] xFlags = new int[] {Plot.X_GRID, Plot.X_TICKS, Plot.X_MINOR_TICKS, Plot.X_LOG_TICKS, Plot.X_NUMBERS};
-			int rows = xFlags.length;
-			int columns = dialogType == AXIS_OPTIONS ? 2 : 1;
 			int flags = 0;
 			if (dialogType == X_AXIS)
 				flags = plot.getFlags() & 0xaaaaaaaa; //keep y flags, i.e., odd bits

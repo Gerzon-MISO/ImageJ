@@ -7,7 +7,6 @@ import ij.plugin.Animator;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
-import java.util.*;
 import javax.imageio.ImageIO;
 
 /**
@@ -73,7 +72,6 @@ public class AVI_Writer implements PlugInFilter {
     private int             biCompression;  //compression type (0, 'JPEG, 'PNG')
     private int             linePad;        //no. of bytes to add for padding of data lines to 4*n length
     private byte[]          bufferWrite;    //output buffer for image data
-    private BufferedImage   bufferedImage;  //data source for writing compressed images
     private RaOutputStream  raOutputStream; //output stream for writing compressed images
     private long[]          sizePointers =  //a stack of the pointers to the chunk sizes (pointers are
                                 new long[5];//  remembered to write the sizes later, when they are known)
@@ -491,7 +489,7 @@ public class AVI_Writer implements PlugInFilter {
         byte[] pixels = (byte[])ip.getPixels();
         int width = ip.getWidth();
         int height = ip.getHeight();
-        int c, offset, index = 0;
+        int offset, index = 0;
         for (int y=height-1; y>=0; y--) {
             offset = y*width;
             for (int x=0; x<width; x++)
@@ -528,7 +526,6 @@ public class AVI_Writer implements PlugInFilter {
 
     /** Write a frame as jpeg- or png-compressed image */
 	private void writeCompressedFrame(ImageProcessor ip) throws IOException {
-		//IJ.log("BufferdImage Type="+bufferedImage.getType()); // 1=RGB, 13=indexed
 		if (biCompression==JPEG_COMPRESSION) {
 			BufferedImage bi = getBufferedImage(ip);
 			ImageIO.write(bi, "jpeg", raOutputStream);

@@ -2,11 +2,8 @@ package ij.plugin;
 import ij.*;
 import ij.gui.*;
 import ij.process.*;
-import ij.measure.Calibration;
 import ij.macro.Interpreter;
-import ij.io.FileInfo;
 import ij.plugin.frame.Recorder;
-import java.awt.image.ColorModel;
 
 
 /** Implements the "Stack to HyperStack", "RGB to HyperStack" 
@@ -122,22 +119,22 @@ public class HyperStackConverter implements PlugIn {
 		int nSlices = imp.getNSlices();
 		int nFrames = imp.getNFrames();
 		int first=C, middle=Z, last=T;
-		int nFirst=nChannels, nMiddle=nSlices, nLast=nFrames;
+		int nFirst=nChannels, nMiddle=nSlices;
 		switch (order) {
 			case CTZ: first=C; middle=T; last=Z;
-				nFirst=nChannels; nMiddle=nFrames; nLast=nSlices;
+				nFirst=nChannels; nMiddle=nFrames;
 				break;
 			case ZCT: first=Z; middle=C; last=T;
-				nFirst=nSlices; nMiddle=nChannels; nLast=nFrames;
+				nFirst=nSlices; nMiddle=nChannels;
 				break;
 			case ZTC: first=Z; middle=T; last=C;
-				nFirst=nSlices; nMiddle=nFrames; nLast=nChannels;
+				nFirst=nSlices; nMiddle=nFrames;
 				break;
 			case TCZ: first=T; middle=C; last=Z;
-				nFirst=nFrames; nMiddle=nChannels; nLast=nSlices;
+				nFirst=nFrames; nMiddle=nChannels;
 				break;
 			case TZC: first=T; middle=Z; last=C;
-				nFirst=nFrames; nMiddle=nSlices; nLast=nChannels;
+				nFirst=nFrames; nMiddle=nSlices;
 				break;
 		}
 		int[] indexes1 = new int[n];
@@ -253,22 +250,22 @@ public class HyperStackConverter implements PlugIn {
         int nSlices = imp.getNSlices();
         int nFrames = imp.getNFrames();
 		int first=C, middle=Z, last=T;
-		int nFirst=nChannels, nMiddle=nSlices, nLast=nFrames;
+		int nFirst=nChannels, nMiddle=nSlices;
 		switch (order) {
 			case CTZ: first=C; middle=T; last=Z;
-				nFirst=nChannels; nMiddle=nFrames; nLast=nSlices;
+				nFirst=nChannels; nMiddle=nFrames;
 				break;
 			case ZCT: first=Z; middle=C; last=T;
-				nFirst=nSlices; nMiddle=nChannels; nLast=nFrames;
+				nFirst=nSlices; nMiddle=nChannels;
 				break;
 			case ZTC: first=Z; middle=T; last=C;
-				nFirst=nSlices; nMiddle=nFrames; nLast=nChannels;
+				nFirst=nSlices; nMiddle=nFrames;
 				break;
 			case TCZ: first=T; middle=C; last=Z;
-				nFirst=nFrames; nMiddle=nChannels; nLast=nSlices;
+				nFirst=nFrames; nMiddle=nChannels;
 				break;
 			case TZC: first=T; middle=Z; last=C;
-				nFirst=nFrames; nMiddle=nSlices; nLast=nChannels;
+				nFirst=nFrames; nMiddle=nSlices;
 				break;
 		}
 		if (order!=CZT) {

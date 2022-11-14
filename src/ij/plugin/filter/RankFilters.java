@@ -5,8 +5,6 @@ import ij.process.*;
 import ij.plugin.ContrastEnhancer;
 import ij.util.ThreadUtil;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
@@ -45,7 +43,6 @@ public class RankFilters implements ExtendedPlugInFilter, DialogListener {
 	int flags = DOES_ALL|SUPPORTS_MASKING|KEEP_PREVIEW;
 	private ImagePlus imp;
 	private int nPasses = 1;			// The number of passes (color channels * stack slices)
-	private PlugInFilterRunner pfr;
 	private int pass;
 	private boolean previewing = false;
 	// M u l t i t h r e a d i n g - r e l a t e d
@@ -150,7 +147,6 @@ public class RankFilters implements ExtendedPlugInFilter, DialogListener {
 				}
 			}
 		}
-		this.pfr = pfr;
 		flags = IJ.setupDialog(imp, flags); //ask whether to process all slices of stack (if a stack)
 		if ((flags&DOES_STACKS)!=0) {
 			int size = imp.getWidth() * imp.getHeight();
@@ -313,8 +309,6 @@ public class RankFilters implements ExtendedPlugInFilter, DialogListener {
 	private void doFiltering(final ImageProcessor ip, final int[] lineRadii, final int filterType,
 			final float minMaxOutliersSign, final float threshold, final int colorChannel, final AtomicInteger nextY) {
 		Rectangle roi = ip.getRoi();
-		int width = ip.getWidth();
-		Object pixels = ip.getPixels();
 		int numThreads = Math.min(roi.height, this.numThreads);
 		if (numThreads==0)
 			return;

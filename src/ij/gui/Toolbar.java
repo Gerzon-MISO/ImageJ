@@ -13,7 +13,6 @@ import java.util.Locale;
 import ij.*;
 import ij.plugin.frame.*;
 import ij.plugin.MacroInstaller;
-import ij.plugin.RectToolOptions;
 import ij.plugin.tool.PlugInTool;
 import ij.plugin.tool.MacroToolRunner;
 import ij.macro.Program;
@@ -60,7 +59,6 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	private static final int NUM_BUTTONS = 21;
 	private static final int BUTTON_WIDTH = 30;
 	private static final int BUTTON_HEIGHT = 31;
-	private static final int SIZE = 28;  // no longer used
 	private static final int GAP_SIZE = 9;
 	private static final int OFFSET = 7;
 	private static final String BRUSH_SIZE = "toolbar.brush.size";
@@ -88,7 +86,6 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	private boolean doNotSavePrefs;
 	private int pc;
 	private String icon;
-	private int startupTime;
 	private PopupMenu rectPopup, ovalPopup, pointPopup, linePopup, zoomPopup, pickerPopup, switchPopup;
 	private CheckboxMenuItem rectItem, roundRectItem, rotatedRectItem;
 	private CheckboxMenuItem ovalItem, ellipseItem, brushItem;
@@ -505,7 +502,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		icon = icons[tool];
 		if (icon==null) return;
 		this.icon = icon;
-		int x1, y1, x2, y2;
+		int x2, y2;
 		pc = 0;
 		if (icon.trim().startsWith("icon:")) {
 			String path = IJ.getDir("macros")+"toolsets/icons/"+icon.substring(icon.indexOf(":")+1);

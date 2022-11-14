@@ -1,10 +1,7 @@
 package ij.io;
 import ij.gui.*;
 import ij.ImagePlus;
-import ij.process.*;
 import java.io.*;
-import java.util.*;
-import java.net.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -114,7 +111,7 @@ public class RoiDecoder {
 	public static final int SCALE_STROKE_WIDTH = 8192;
 	
 	// types
-	private final int polygon=0, rect=1, oval=2, line=3, freeline=4, polyline=5, noRoi=6,
+	private final int polygon=0, rect=1, oval=2, line=3, freeline=4, polyline=5,
 		freehand=7, traced=8, angle=9, point=10;
 	
 	private byte[] data;
@@ -437,12 +434,6 @@ public class RoiDecoder {
 		int type = getByte(TYPE);
 		if (type!=rect)
 			throw new IllegalArgumentException("Invalid composite ROI type");
-		int top= getShort(TOP);
-		int left = getShort(LEFT);
-		int bottom = getShort(BOTTOM);
-		int right = getShort(RIGHT);
-		int width = right-left;
-		int height = bottom-top;
 		int n = getInt(SHAPE_ROI_SIZE);
 
 		ShapeRoi roi = null;

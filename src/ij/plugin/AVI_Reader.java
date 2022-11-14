@@ -3,8 +3,6 @@ import ij.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.io.*;
-import ij.plugin.Animator;
-import ij.util.Tools;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -145,7 +143,6 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 	private final static int   FOURCC_strh = 0x68727473;   //'strh'
 	private final static int   FOURCC_strf = 0x66727473;   //'strf'
 	private final static int   FOURCC_movi = 0x69766f6d;   //'movi'
-	private final static int   FOURCC_rec =	 0x20636572;   //'rec '
 	private final static int   FOURCC_JUNK = 0x4b4e554a;   //'JUNK'
 	private final static int   FOURCC_vids = 0x73646976;   //'vids'
 	private final static int   FOURCC_00db = 0x62643030;   //'00db'
@@ -162,7 +159,6 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 	private final static int   NO_COMPRESSION_MIL= 0x204c494d; //'MIL ' - Matrox Imaging Library
 	private final static int   AYUV_COMPRESSION	 = 0x56555941; //'AYUV' -uncompressed, but alpha, Y, U, V bytes
 	private final static int   UYVY_COMPRESSION	 = 0x59565955; //'UYVY' - 4:2:2 with byte order u y0 v y1
-	private final static int   Y422_COMPRESSION	 = 0x564E5955; //'Y422' -another name for of UYVY
 	private final static int   UYNV_COMPRESSION	 = 0x32323459; //'UYNV' -another name for of UYVY
 	private final static int   CYUV_COMPRESSION	 = 0x76757963; //'cyuv' -as UYVY but not top-down
 	private final static int   V422_COMPRESSION	 = 0x32323456; //'V422' -as UYVY but not top-down
@@ -191,8 +187,6 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 
 	// flags from AVI chunk header
 	private final static int   AVIF_HASINDEX	 = 0x00000010;	// Index at end of file?
-	private final static int   AVIF_MUSTUSEINDEX = 0x00000020;	// ignored by this plugin
-	private final static int   AVIF_ISINTERLEAVED= 0x00000100;	// ignored by this plugin
 
 	// constants used to read 'AVI 2' index chunks (others than those defined here are not supported)
 	private final static byte  AVI_INDEX_OF_CHUNKS=0x01;	   //index of frames
@@ -221,7 +215,6 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 	private	 int			   streamNumber;		//number of the (first) video stream
 	private	 int			   type0xdb, type0xdc;	//video stream chunks must have one of these two types (e.g. '00db' for straem 0)
 	private	 long			   fileSize;			//file size
-	private	 long			   aviSize;				//size of 'AVI' chunk
 	private	 long			   headerPositionEnd;	//'movi' will start somewhere here
 	private	 long			   indexPosition;		//position of the main index (indx)
 	private	 long			   indexPositionEnd;	//indx seek end
@@ -615,8 +608,7 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 		if (verbose)
 			IJ.log("File header: File type='"+fourccString(fileType)+"' (should be 'RIFF')"+timeString());
 		if (fileType != FOURCC_RIFF)
-			throw new Exception("Not an AVI file.");
-		aviSize = readInt() & SIZE_MASK;					//size of AVI chunk
+			throw new Exception("Not an AVI file.");					//size of AVI chunk
 		int riffType = readInt();
 		if (verbose)
 			IJ.log("File header: RIFF type='"+fourccString(riffType)+"' (should be 'AVI ')");
@@ -845,7 +837,6 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 			for (int i=0;i<nEntriesInUse;i++) {			//read all entries (each pointing to an ix00 index)
 				long qwOffset = readLong();
 				int dwSize = readInt();
-				int dwDuration = readInt();				//number of frames in ix00; ignored: not always trustworthy
 				if (verbose)
 					IJ.log("   indx entry: '" +fourccString(dwChunkId)+"' incl header "+posSizeString(qwOffset,dwSize)+timeString());
 				long nextIndxEntryPointer = raFile.getFilePointer();
@@ -898,7 +889,6 @@ public class AVI_Reader extends VirtualStack implements PlugIn {
 			if ((raFile.getFilePointer()+16) >endPosition) break;
 
 			int dwChunkId = readInt();
-			int dwFlags = readInt();
 			int dwOffset = readInt();
 			int dwSize = readInt();
 			//IJ.log("idx1: dwOffset=0x"+Long.toHexString(dwOffset));
