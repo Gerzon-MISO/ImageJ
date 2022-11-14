@@ -98,7 +98,7 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 	private static boolean wholeWords;
 	private boolean isMacroWindow;
 	private int debugStart, debugEnd;
-	private static TextWindow debugWindow;
+
 	private boolean step;
 	private int previousLine;
 	private static Editor instance;
@@ -1708,12 +1708,8 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 		if ((debugStart==0||debugStart==len) && debugEnd==len)
 			return 0; // skip code added with Interpreter.setAdditionalFunctions()
 		ta.select(debugStart, debugEnd);
-		if (debugWindow!=null && !debugWindow.isShowing()) {
-			interp.setDebugger(null);
-			debugWindow = null;
-		} else
-			debugWindow = interp.updateDebugWindow(interp.getVariables(), debugWindow);
-		if (debugWindow!=null) {
+		interp.setDebugWindow();
+		if (interp.getDebugWindow() != null) {
 			interp.updateArrayInspector();
 			toFront();
 		}

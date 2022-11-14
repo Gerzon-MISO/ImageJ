@@ -64,7 +64,7 @@ public class Interpreter implements MacroConstants {
 	static boolean tempShowMode;
 	boolean waitingForUser;
 	int selectCount;
-	
+
 	static TextWindow arrayWindow;
 	int inspectStkIndex = -1;
 	int inspectSymIndex = -1;
@@ -73,6 +73,7 @@ public class Interpreter implements MacroConstants {
 	int errorCount;
 	volatile boolean ignoreErrors;
 	String errorMessage;
+	TextWindow debugWindow;
 	String evalOutput;
 	int[] callStack;
 	int callDepth = 0;
@@ -2542,6 +2543,18 @@ public class Interpreter implements MacroConstants {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
+
+	public TextWindow getDebugWindow() {
+		return this.debugWindow;
+	}
+
+	public void setDebugWindow() {
+		if (debugWindow != null && !debugWindow.isShowing()) {
+			setDebugger(null);
+			debugWindow = null;
+		} else
+			debugWindow = updateDebugWindow(getVariables(), debugWindow);
+	} 
 			
 } // class Interpreter
 
