@@ -65,25 +65,10 @@ public class HistogramPlot extends ImagePlus {
 			imp2.setRoi(imp.getRoi());
 			stats = imp2.getStatistics(AREA+MEAN+MODE+MIN_MAX, bins, histMin, histMax);
 		} else if (rgbMode==RGB)
-			stats = RGBHistogram(imp, bins, histMin, histMax);
+			stats = Statistics.RGBHistogram(imp, bins, histMin, histMax);
 		else
 			stats = imp.getStatistics(AREA+MEAN+MODE+MIN_MAX+(limitToThreshold?LIMIT:0), bins, histMin, histMax);
 		draw(imp, stats);
-	}
-	
-	private ImageStatistics RGBHistogram(ImagePlus imp, int bins, double histMin, double histMax) {
-		ImageProcessor ip = (ColorProcessor)imp.getProcessor();
-		ip = ip.crop();
-		int w = ip.getWidth();
-		int h = ip.getHeight();
-		ImageProcessor ip2 = new ByteProcessor(w*3, h);
-		ByteProcessor temp = null;
-		for (int i=0; i<3; i++) {
-			temp = ((ColorProcessor)ip).getChannel(i+1,temp);
-			ip2.insert(temp, i*w, 0);
-		}
-		ImagePlus imp2 = new ImagePlus("imp2", ip2);
-		return imp2.getStatistics(AREA+MEAN+MODE+MIN_MAX, bins, histMin, histMax);
 	}
 
 	/** Draws the histogram using the specified title and ImageStatistics. */
@@ -105,10 +90,6 @@ public class HistogramPlot extends ImagePlus {
 		ip.fill();
 		ImageProcessor srcIP = imp.getProcessor();
 		drawHistogram(imp, ip, fixedRange, stats.histMin, stats.histMax);
-	}
-	
-	protected void drawHistogram(ImageProcessor ip, boolean fixedRange) {
-		drawHistogram(null, ip, fixedRange, 0.0, 0.0);
 	}
 
 	void drawHistogram(ImagePlus imp, ImageProcessor ip, boolean fixedRange, double xMin, double xMax) {
@@ -191,16 +172,6 @@ public class HistogramPlot extends ImagePlus {
 		ip.insert(bar, x,y);
 		ip.setColor(Color.black);
 		ip.drawRect(x-1, y, width+2, height);
-	}
-
-	/** Scales a threshold level to the range 0-255. */
-	int scaleDown(ImageProcessor ip, double threshold) {
-		double min = ip.getMin();
-		double max = ip.getMax();
-		if (max>min)
-			return (int)(((threshold-min)/(max-min))*255.0);
-		else
-			return 0;
 	}
 
 	void drawPlot(long maxCount, ImageProcessor ip) {

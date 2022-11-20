@@ -15,7 +15,6 @@ import java.util.*;
 import java.io.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.*;
-import java.net.URL;
 import java.awt.datatransfer.*;
 import java.awt.geom.*;
 
@@ -88,6 +87,11 @@ public class Functions implements MacroConstants, Measurements {
 	boolean profileSubPixelResolution;
 	boolean waitForCompletion = true;
 
+	static final String UNRECOGNNIZED_MESSAGE = "Unrecognized function name";
+	static final String EXPECTED_MESSAGE = "'.' expected";
+	static final String EXPECTED_FUCTION_MESSAGE = "Function name expected: ";
+	static final String RESULT_MESSAGE = "Results";
+	static final String EXPECTED_MESSAGE_2 = "')' expected";
 
 	Functions(Interpreter interp, Program pgm) {
 		this.interp = interp;
@@ -311,20 +315,20 @@ public class Functions implements MacroConstants, Measurements {
 	// Functions returning a string must be added
 	// to isStringFunction(String,int).
 	Variable getVariableFunction(int type) {
-		Variable var = null;
+		Variable variableFunction = null;
 		switch (type) {
-			case TABLE: var = doTable(); break;
-			case ROI: var = doRoi(); break;
-			case ROI_MANAGER2: var = doRoiManager(); break;
-			case PROPERTY: var = doProperty(); break;
-			case IMAGE: var = doImage(); break;
-			case COLOR: var = doColor(); break;
+			case TABLE: variableFunction = doTable(); break;
+			case ROI: variableFunction = doRoi(); break;
+			case ROI_MANAGER2: variableFunction = doRoiManager(); break;
+			case PROPERTY: variableFunction = doProperty(); break;
+			case IMAGE: variableFunction = doImage(); break;
+			case COLOR: variableFunction = doColor(); break;
 			default:
 				interp.error("Variable function expected");
 		}
-		if (var==null)
-			var = new Variable(Double.NaN);
-		return var;
+		if (variableFunction==null)
+			variableFunction = new Variable(Double.NaN);
+		return variableFunction;
 	}
 
 	private void setLineWidth(int width) {
@@ -337,31 +341,9 @@ public class Functions implements MacroConstants, Measurements {
 	}
 
 	private double doMath() {
-		interp.getToken();
-		if (interp.token!='.')
-			interp.error("'.' expected");
-		interp.getToken();
-		if (!(interp.token==WORD||interp.token==NUMERIC_FUNCTION))
-			interp.error("Function name expected: ");
+		checkToken();
 		String name = interp.tokenString;
-		if (name.equals("min"))
-			return Math.min(getFirstArg(), getLastArg());
-		else if (name.equals("max"))
-			return Math.max(getFirstArg(), getLastArg());
-		else if (name.equals("pow"))
-			return Math.pow(getFirstArg(), getLastArg());
-		else if (name.equals("atan2"))
-			return Math.atan2(getFirstArg(), getLastArg());
-		else if (name.equals("constrain"))
-			return Math.min(Math.max(getFirstArg(), getNextArg()), getLastArg());
-		else if (name.equals("map")) {
-			double value = getFirstArg();
-			double fromLow = getNextArg();
-			double fromHigh = getNextArg();
-			double toLow = getNextArg();
-			double toHigh = getLastArg();
-			return (value-fromLow)*(toHigh-toLow)/(fromHigh-fromLow)+toLow;
-		}
+		
 		double arg = getArg();
 		if (name.equals("ceil"))
 			return Math.ceil(arg);
@@ -400,8 +382,26 @@ public class Functions implements MacroConstants, Measurements {
 		else if (name.equals("toDegrees"))
 			return Math.toDegrees(arg);
 		else
-			interp.error("Unrecognized function name");
+			interp.error(UNRECOGNNIZED_MESSAGE);
 		return Double.NaN;
+	}
+
+	private void checkToken() {
+		interp.getToken();
+		if (interp.token!='.')
+			interp.error(EXPECTED_MESSAGE);
+		interp.getToken();
+		if (!(interp.token==WORD||interp.token==NUMERIC_FUNCTION))
+			interp.error(EXPECTED_FUCTION_MESSAGE);
+	}
+
+	private double matchMap() {
+		double value = getFirstArg();
+		double fromLow = getNextArg();
+		double fromHigh = getNextArg();
+		double toLow = getNextArg();
+		double toHigh = getLastArg();
+		return (value-fromLow)*(toHigh-toLow)/(fromHigh-fromLow)+toLow;
 	}
 
 	final double math(int type) {
@@ -708,10 +708,10 @@ public class Functions implements MacroConstants, Measurements {
 
 	private void selectWindow() {
 		String title = getStringArg();
-		if (resultsPending && "Results".equals(title)) {
+		if (resultsPending && RESULT_MESSAGE.equals(title)) {
 			ResultsTable rt = ResultsTable.getResultsTable();
 			if (rt!=null && rt.size()>0)
-				rt.show("Results");
+				rt.show(RESULT_MESSAGE);
 		}
 		IJ.selectWindow(title);
 		resetImage();
@@ -781,8 +781,12 @@ public class Functions implements MacroConstants, Measurements {
 			return;
 		}
 		int red=(int)arg1, green=(int)getNextArg(), blue=(int)getLastArg();
-		if (red<0) red=0; if (green<0) green=0; if (blue<0) blue=0;
-		if (red>255) red=255; if (green>255) green=255; if (blue>255) blue=255;
+		if (red<0) red=0;
+		if (green<0) green=0;
+		if (blue<0) blue=0;
+		if (red>255) red=255;
+		if (green>255) green=255;
+		if (blue>255) blue=255;
 		globalColor = new Color(red, green, blue);
 		globalValue = Double.NaN;
 		if (WindowManager.getCurrentImage()!=null)
@@ -953,7 +957,7 @@ public class Functions implements MacroConstants, Measurements {
 			else
 				ip.putPixel(a1, (int)a2, (int)a3);
 		} else {
-			if (interp.token!=')') interp.error("')' expected");
+			if (interp.token!=')') interp.error(EXPECTED_MESSAGE_2);
 			if (ip instanceof ColorProcessor)
 				ip.set(a1, (int)a2);
 			else
@@ -991,7 +995,7 @@ public class Functions implements MacroConstants, Measurements {
 				}
 			}
 		} else {
-			if (interp.token!=')') interp.error("')' expected");
+			if (interp.token!=')') interp.error(EXPECTED_MESSAGE_2);
 			if (ip instanceof ColorProcessor)
 				value = ip.get((int)a1);
 			else
@@ -1300,7 +1304,7 @@ public class Functions implements MacroConstants, Measurements {
 		if (size==0) {
 			Frame frame = WindowManager.getFrontWindow();
 			if (frame==null || (frame instanceof Editor))
-				frame = WindowManager.getFrame("Results");
+				frame = WindowManager.getFrame(RESULT_MESSAGE);
 			if (frame!=null && (frame instanceof TextWindow)) {
 				TextPanel tp = ((TextWindow)frame).getTextPanel();
 				rt = tp.getOrCreateResultsTable();
@@ -1364,7 +1368,7 @@ public class Functions implements MacroConstants, Measurements {
 	void updateResults() {
 		interp.getParens();
 		ResultsTable rt = Analyzer.getResultsTable();
-		rt.show("Results");
+		rt.show(RESULT_MESSAGE);
 		resultsPending = false;
 	}
 
@@ -2184,10 +2188,10 @@ public class Functions implements MacroConstants, Measurements {
 	double doPlot() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD || interp.token==PREDEFINED_FUNCTION || interp.token==STRING_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("create")) {
 			return newPlot();
@@ -2377,7 +2381,7 @@ public class Functions implements MacroConstants, Measurements {
 	}
 
 	double showPlotValues(boolean useLabels) {
-		String title = "Results";
+		String title = RESULT_MESSAGE;
 		if (interp.nextToken() == '(') {
 			interp.getLeftParen();
 			if (interp.nextToken()!=')')
@@ -3288,7 +3292,7 @@ public class Functions implements MacroConstants, Measurements {
 		}
 
 		if (pattern != null) {//Norbert
-			if (pattern.equals("Results"))
+			if (pattern.equals(RESULT_MESSAGE))
 				resultsPending = false;
 			WildcardMatch wm = new WildcardMatch();
 			wm.setCaseSensitive(false);
@@ -3340,7 +3344,7 @@ public class Functions implements MacroConstants, Measurements {
 							TextWindow txtWin = (TextWindow) thisWin;
 							String title = txtWin.getTitle();
 							if (wm.match(title, pattern)) {
-								if (title.equals("Results"))
+								if (title.equals(RESULT_MESSAGE))
 									IJ.run("Clear Results");
 								txtWin.close();
 							}
@@ -3827,11 +3831,11 @@ public class Functions implements MacroConstants, Measurements {
 				case 4: max = getVariable(); break;
 				case 5: std = getVariable(); params += STD_DEV; break;
 				case 6: hist = getArrayVariable(); break;
-				default: interp.error("')' expected");
+				default: interp.error(EXPECTED_MESSAGE_2);
 			}
 			interp.getToken();
 		}
-		if (interp.token!=')') interp.error("')' expected");
+		if (interp.token!=')') interp.error(EXPECTED_MESSAGE_2);
 		ImagePlus imp = getImage();
 		Calibration cal = calibrated?imp.getCalibration():null;
 		ImageProcessor ip = getProcessor();
@@ -3977,10 +3981,10 @@ public class Functions implements MacroConstants, Measurements {
 	String doDialog() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD || interp.token==STRING_FUNCTION || interp.token==NUMERIC_FUNCTION || interp.token==PREDEFINED_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		try {
 			if (name.equals("create")) {
@@ -4287,10 +4291,10 @@ public class Functions implements MacroConstants, Measurements {
 	String doFile() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD || interp.token==STRING_FUNCTION || interp.token==NUMERIC_FUNCTION || interp.token==PREDEFINED_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("open"))
 			return openFile();
@@ -4895,10 +4899,10 @@ public class Functions implements MacroConstants, Measurements {
 	String doString() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==STRING_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("append"))
 			return appendToBuffer();
@@ -5072,10 +5076,10 @@ public class Functions implements MacroConstants, Measurements {
 	String doExt() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD || interp.token==STRING_FUNCTION || interp.token==NUMERIC_FUNCTION || interp.token==PREDEFINED_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("install")) {
 			Object plugin = IJ.runPlugIn(getStringArg(), "");
@@ -5238,10 +5242,10 @@ public class Functions implements MacroConstants, Measurements {
 	double doStack() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (interp.token!=WORD && interp.token!=PREDEFINED_FUNCTION)
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("size"))
 			return getImage().getStackSize();
@@ -5402,11 +5406,11 @@ public class Functions implements MacroConstants, Measurements {
 				case 4: max = getVariable(); break;
 				case 5: std = getVariable(); params += STD_DEV; break;
 				case 6: hist = getArrayVariable(); break;
-				default: interp.error("')' expected");
+				default: interp.error(EXPECTED_MESSAGE_2);
 			}
 			interp.getToken();
 		}
-		if (interp.token!=')') interp.error("')' expected");
+		if (interp.token!=')') interp.error(EXPECTED_MESSAGE_2);
 		ImageStatistics stats = new StackStatistics(imp);
 		count.setValue(stats.pixelCount);
 		if (mean!=null) mean.setValue(stats.mean);
@@ -5559,7 +5563,7 @@ public class Functions implements MacroConstants, Measurements {
 			s = IJ.d2s(value, (int)interp.getExpression());
 			interp.getToken();
 		}
-		if (interp.token!=')') interp.error("')' expected");
+		if (interp.token!=')') interp.error(EXPECTED_MESSAGE_2);
 		return s;
 	}
 
@@ -5616,10 +5620,10 @@ public class Functions implements MacroConstants, Measurements {
 	String doList() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==ARRAY_FUNCTION||interp.token==NUMERIC_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		if (props==null)
 			props = new Properties();
 		String value = null;
@@ -5806,10 +5810,10 @@ public class Functions implements MacroConstants, Measurements {
 	double fit() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==ARRAY_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		if (props==null)
 			props = new Properties();
 		String name = interp.tokenString;
@@ -5921,7 +5925,7 @@ public class Functions implements MacroConstants, Measurements {
 			interp.getToken();
 		}
 		if (interp.token!=')')
-			interp.error("')' expected");
+			interp.error(EXPECTED_MESSAGE_2);
 		checkIndex(index, 0, CurveFitter.fitList.length-1);
 		name.setString(CurveFitter.fitList[index]);
 		formula.setString(CurveFitter.fList[index]);
@@ -5985,10 +5989,10 @@ public class Functions implements MacroConstants, Measurements {
 	Variable[] doArray() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==PREDEFINED_FUNCTION||interp.token==STRING_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("copy"))
 			return copyArray();
@@ -6333,11 +6337,11 @@ public class Functions implements MacroConstants, Measurements {
 				case 2: maxv = getVariable(); break;
 				case 3: mean = getVariable(); break;
 				case 4: std = getVariable(); break;
-				default: interp.error("')' expected");
+				default: interp.error(EXPECTED_MESSAGE_2);
 			}
 			interp.getToken();
 		}
-		if (interp.token!=')') interp.error("')' expected");
+		if (interp.token!=')') interp.error(EXPECTED_MESSAGE_2);
 		int n = a.length;
 		double sum=0.0, sum2=0.0, value;
 		double min = Double.POSITIVE_INFINITY;
@@ -6506,7 +6510,7 @@ public class Functions implements MacroConstants, Measurements {
 			interp.getToken();
 		} while (interp.token==',');
 		if (interp.token!=')')
-			interp.error("')' expected");
+			interp.error(EXPECTED_MESSAGE_2);
 		int n = arrays.size();
 		if (n==1) {
 			if (title.equals("Arrays"))
@@ -6573,10 +6577,10 @@ public class Functions implements MacroConstants, Measurements {
 	private String doIJ() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==NUMERIC_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("pad"))
 			return pad();
@@ -6646,7 +6650,7 @@ public class Functions implements MacroConstants, Measurements {
 		if (resultsPending) {
 			ResultsTable rt = Analyzer.getResultsTable();
 			if (rt!=null && rt.size()>0)
-				rt.show("Results");
+				rt.show(RESULT_MESSAGE);
 			resultsPending = false;
 		}
 		if (arg2!=null)
@@ -6658,7 +6662,7 @@ public class Functions implements MacroConstants, Measurements {
 	double overlay() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==ARRAY_FUNCTION
 		|| interp.token==PREDEFINED_FUNCTION||interp.token==USER_FUNCTION))
@@ -6771,7 +6775,7 @@ public class Functions implements MacroConstants, Measurements {
 			if (IJ.getInstance()==null)
 				Analyzer.setResultsTable(rt);
 			else
-				rt.show("Results");
+				rt.show(RESULT_MESSAGE);
 		} else if (name.equals("fill")) {
 			interp.getLeftParen();
 			Color foreground = getColor();
@@ -6834,7 +6838,7 @@ public class Functions implements MacroConstants, Measurements {
  			imp.setRoi(Roi.xor(overlay.toArray(indexes)));
 			return Double.NaN;
 		} else
-			interp.error("Unrecognized function name");
+			interp.error(UNRECOGNNIZED_MESSAGE);
 		return Double.NaN;
 	}
 
@@ -7124,10 +7128,10 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable doTable() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD || interp.token==NUMERIC_FUNCTION || interp.token==PREDEFINED_FUNCTION || interp.token==STRING_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("create"))
 			return resetTable();
@@ -7193,7 +7197,7 @@ public class Functions implements MacroConstants, Measurements {
 		else if (name.equals("setLocAndSize") || name.equals("setLocationAndSize"))
 			return setTableLocAndSize();
 		else
-			interp.error("Unrecognized function name");
+			interp.error(UNRECOGNNIZED_MESSAGE);
 		return null;
 	}
 
@@ -7296,12 +7300,12 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable resetTable() {
 		String title = getTitleArg();
 		ResultsTable rt = null;
-		if ("Results".equals(title)) {
+		if (RESULT_MESSAGE.equals(title)) {
 			rt = Analyzer.getResultsTable();
 			rt.showRowNumbers(false);
 			rt.reset();
-			rt.show("Results");
-			toFront("Results");
+			rt.show(RESULT_MESSAGE);
+			toFront(RESULT_MESSAGE);
 			return null;
 		}
 		if (getRT(title)==null) {
@@ -7345,9 +7349,9 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable applyMacroToTable() {
 		String macro = getFirstString();
 		String title = getTitle();
-		if (macro.equals("Results")) {
+		if (macro.equals(RESULT_MESSAGE)) {
 			macro = title;
-			title = "Results";
+			title = RESULT_MESSAGE;
 		}
 		ResultsTable rt = getResultsTable(title);
 		rt.applyMacro(macro);
@@ -7511,8 +7515,8 @@ public class Functions implements MacroConstants, Measurements {
 	private ResultsTable getResultsTable(String title) {
 		ResultsTable rt = getRT(title);
 		if (title==null)
-			title="Results";
-		if (rt==null && "Results".equals(title))
+			title=RESULT_MESSAGE;
+		if (rt==null && RESULT_MESSAGE.equals(title))
 			rt = Analyzer.getResultsTable();
 		if (rt==null)
 			interp.error("\""+title+"\" table not found");
@@ -7543,20 +7547,20 @@ public class Functions implements MacroConstants, Measurements {
 		if (title==null && rt==null && currentTable!=null)
 			return currentTable;
 		if (title==null)
-			title="Results";
+			title=RESULT_MESSAGE;
 		if (frame==null) {
 			frame = WindowManager.getFrame(title);
 			if (!(frame instanceof TextWindow))
 				frame = null;
 		}
 		if (frame==null) {
-			if (title!=null && !title.equals("Results"))
+			if (title!=null && !title.equals(RESULT_MESSAGE))
 				return null;
 			Frame[] frames = WindowManager.getNonImageWindows();
 			if (frames==null) return null;
 			for (int i=0; i<frames.length; i++) {
 				if (frames[i]!=null && (frames[i] instanceof TextWindow) &&
-				!("Results".equals(frames[i].getTitle())||"Log".equals(frames[i].getTitle())))
+				!(RESULT_MESSAGE.equals(frames[i].getTitle())||"Log".equals(frames[i].getTitle())))
 					rt = ((TextWindow)frames[i]).getResultsTable();
 				if (rt!=null)
 					break;
@@ -7684,10 +7688,10 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable doRoi() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==PREDEFINED_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("getDefaultStrokeWidth")) {
 			interp.getParens();
@@ -8004,10 +8008,10 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable doRoiManager() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (interp.token!=WORD)
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		RoiManager rm = RoiManager.getInstance2();
 		if (rm==null)
@@ -8067,10 +8071,10 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable doProperty() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==STRING_FUNCTION||interp.token==NUMERIC_FUNCTION||interp.token==ARRAY_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		ImagePlus imp = getImage();
 		if (name.equals("set")) {
@@ -8200,10 +8204,10 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable doImage() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==PREDEFINED_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		ImagePlus imp = getImage();
 		if (name.equals("width")) {
@@ -8237,10 +8241,10 @@ public class Functions implements MacroConstants, Measurements {
 	private Variable doColor() {
 		interp.getToken();
 		if (interp.token!='.')
-			interp.error("'.' expected");
+			interp.error(EXPECTED_MESSAGE);
 		interp.getToken();
 		if (!(interp.token==WORD||interp.token==PREDEFINED_FUNCTION||interp.token==STRING_FUNCTION))
-			interp.error("Function name expected: ");
+			interp.error(EXPECTED_FUCTION_MESSAGE);
 		String name = interp.tokenString;
 		if (name.equals("set")) {
 			setColor();

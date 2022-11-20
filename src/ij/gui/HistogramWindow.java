@@ -5,12 +5,10 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.io.*;
 import java.awt.datatransfer.*;
-import java.util.ArrayList;
 import ij.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.plugin.filter.Analyzer;
-import ij.text.TextWindow;
 
 /** This class is an extended ImageWindow that displays histograms. */
 public class HistogramWindow extends ImageWindow implements Measurements, ActionListener, 
@@ -130,25 +128,10 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 			imp2.setRoi(imp.getRoi());
 			stats = imp2.getStatistics(AREA+MEAN+MODE+MIN_MAX, bins, histMin, histMax);
 		} else if (rgbMode==RGB)
-			stats = RGBHistogram(imp, bins, histMin, histMax);
+			stats = Statistics.RGBHistogram(imp, bins, histMin, histMax);
 		else
 			stats = imp.getStatistics(AREA+MEAN+MODE+MIN_MAX+(limitToThreshold?LIMIT:0), bins, histMin, histMax);
 		showHistogram(imp, stats);
-	}
-	
-	private ImageStatistics RGBHistogram(ImagePlus imp, int bins, double histMin, double histMax) {
-		ImageProcessor ip = (ColorProcessor)imp.getProcessor();
-		ip = ip.crop();
-		int w = ip.getWidth();
-		int h = ip.getHeight();
-		ImageProcessor ip2 = new ByteProcessor(w*3, h);
-		ByteProcessor temp = null;
-		for (int i=0; i<3; i++) {
-			temp = ((ColorProcessor)ip).getChannel(i+1,temp);
-			ip2.insert(temp, i*w, 0);
-		}
-		ImagePlus imp2 = new ImagePlus("imp2", ip2);
-		return imp2.getStatistics(AREA+MEAN+MODE+MIN_MAX, bins, histMin, histMax);
 	}
 
 	/** Draws the histogram using the specified title and ImageStatistics. */
@@ -243,10 +226,6 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 		} else
 			drawValueAndCount(ip, Double.NaN, -1);
 		this.imp.updateAndDraw();
-	}
-	
-	protected void drawHistogram(ImageProcessor ip, boolean fixedRange) {
-		drawHistogram(null, ip, fixedRange, 0.0, 0.0);
 	}
 
 	void drawHistogram(ImagePlus imp, ImageProcessor ip, boolean fixedRange, double xMin, double xMax) {

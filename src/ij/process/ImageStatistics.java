@@ -326,4 +326,18 @@ public class ImageStatistics implements Measurements {
 		upperThreshold = maxThreshold;
 	}
 
+	public void getMode() {
+        int count;
+        maxCount = 0;
+        for (int i = 0; i < nBins; i++) {
+        	count = histogram[i];
+            if (count > maxCount) {
+                maxCount = count;
+                mode = i;
+            }
+        }
+        dmode = histMin+mode*binSize;
+        if (binSize!=1.0)
+        	dmode += binSize/2.0;        	
+	}
 }
